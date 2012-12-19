@@ -1,0 +1,7 @@
+cron:
+"""
+- description: db replace job
+  url: /cron/dbReplace
+  schedule: every day 10:52
+  timezone: Asia/Tokyo
+"""

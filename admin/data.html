@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="format-fetection" content="telephone=no" />
+    <title>管理ページ</title>
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+    <link rel="stylesheet" href="../htmls/my.css">
+    <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+    <script src="../htmls/data.js"></script>
+  </head>
+  <body>
+    <!-- アドミンページ -->
+    <div data-role="page" id="home">
+      <div id="homeTitle" data-role="header">
+        <a href="http://tablet-hikaku.appspot.com" class="homeButton" data-theme="b" data-icon="home" data-role="button" data-iconpos="notext">home</a>
+        <h4 id="homeTitleLabel">
+          タブレット比較　管理ページ
+        </h4>
+      </div>
+      <div data-role="content">
+        <div id="explain">
+          <h3>説明</h3>
+          1. テキストボックスに<a href="http://www.coneco.net" target="new">coneco.net</a>から商品ページのURLを貼り付け<br>
+          2. 「データ抽出」をクリックしてデータストアに保存<br>
+          3. [SUCCEEDED]が出ると成功、[ALREADY REGISTERED]は既に登録済を表す
+        </div>
+        <form action="#" method="post"enctype="multipart/form-data" name="entry">
+          <label class="urlLabel" for="conecoURL">coneco.net商品ページのアドレス</label>
+          <input type="text" id="conecoURL" name = "conecoURL" placeholder="http://www.coneco.net/..." data-inline="true" />
+        </form>
+        <div class='submit'>
+          <center>
+          <a href="#" id="dataButton" data-role="button" data-inline="true" data-theme="e">データ抽出</a>
+          </center>
+        </div>
+      </div>
+      <div class="aboutService">
+        <ul>
+          <li><a href="#home">TOPへ</a></li>
+          <li><a href="#kiyaku">利用規約</a></li>
+          <li class="last"><a href="#">サービスについて</a></li>
+        </ul>
+      </div>
+      <div class="copyright">
+        (C) 2012 コピーライトがここに入ります.
+      </div>
+
+      <!-- ログインパネル -->
+      <div data-role="popup" id="signinPanel" data-corners="false" data-theme="none" data-shadow="false" data-tolerance="0.0" data-inline="true">
+        <div class="signinArea">
+        <center>
+          <!-- <h1 class="signinHead">ログイン</h1> -->
+          <form action="#" method="post"enctype="multipart/form-data" name="signin">
+          <!-- <label class="signinLabel" for="userID">ユーザー名</label> -->
+          <input type="text" id="signinUserID" name = "user" placeholder="ユーザー名" data-inline="true" />
+          <!-- <label class="signinLabel" for="pass">パスワード</label> -->
+          <input type="password" name="pass" id="signinPass" placeholder="パスワード" data-inline="true" />
+          
+          <a id="signinButton" data-theme="e" data-role="button" class="btnStyle2" data-inline="true">ログイン</a>
+          <a href="#" id="signinCancelButton" data-rel="back" data-theme="c" data-role="button" class="btnStyle2" data-inline="true">キャンセル</a>
+          <br>
+          <a href="#signup" id="panelsignupLabel" data-inline="true" data-theme="e" data-transition="slideup">アカウントを新規登録する</a>
+          </form>
+        </center>
+        </div>
+      </div>
+      <!-- ログインパネルおわり -->
+    </div>
+    <!--ホームおわり-->
+  </body>
+</html>

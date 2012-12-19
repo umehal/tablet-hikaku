@@ -1,0 +1,27 @@
+application: tablet-hikaku
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+handlers:
+- url: /favicon\.ico
+  static_files: favicon.ico
+  upload: favicon\.ico
+
+- url: /htmls
+  static_dir: htmls
+
+- url: /admin
+  static_dir: admin/(.html)
+
+- url: /cron/.*
+  script: cron.application
+  login: admin
+
+- url: .*
+  script: tablet.application
+
+libraries:
+- name: django
+  version: "1.2"
