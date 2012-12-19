@@ -196,7 +196,7 @@ $(function() {
     searchRequest(param);
   });
   function searchRequest(param){
-    url = global.url + '/search';
+    url = global.url + 'search';
     req = param;
     global.loading(true, '検索中…');
     $.post(url, req, callback, "json");
