@@ -73,7 +73,7 @@ global.message = function(message,time){
     $.mobile.loading('hide');
   },time);
 };
-
+global.url = 'http://tablet-hikaku.appspot.com/';
 
 
 /*
@@ -119,339 +119,94 @@ var ipCallback = function(json){
 };
 */
 
-//ホーム画面の処理
+//検索画面の処理
 $(function() {
-  var viewsJson,bookJson;
-  var bookmarkClick = 0;
-  var bookmarkCount;
-  $(document).ready(function(){
-    $("#viewsListView").html('');
-    $("#bookListView").html('');
-    var viewsMs = '<li id="liHead" data-role="list-divider" role="heading">アクセスランキング(Weekly)</li>';
-    //var bookMs = '<li id="liHead" data-role="list-divider" role="heading">いいねランキング</li>';
-    $('<li>').html(viewsMs).appendTo('#viewsListView');
-    //$('<li>').html(bookMs).appendTo('#bookListView');
-    loadRankingList(3,0);
-    //loadBookmarkRankingList(3,0);
-  });
-  function loadRankingList(lim,off){
-    url = "http://em-home.appspot.com/getViewRanking";
-    req = {
-      "limit":lim,
-      "offset":off,
-      "callback":"?"
+  //検索処理
+  $("#searchButton").click(function() {
+    var androidCheck = $("#Android").attr("checked");
+    var iosCheck = $("#iOS").attr("checked");
+    var windowsCheck = $("#Windows").attr("checked");
+    var osTag;
+    if(androidCheck){
+      osTag = "And";
+    }
+    else if(iosCheck){
+      osTag = "iOS";
+    }
+    else if(windowsCheck){
+      osTag = "Win";
+    }
+    else {
+      osTag = "";
+    }
+    var sizeCheck1 = $("#under7.1").attr("checked");
+    var sizeCheck2 = $("#7.1-9.9").attr("checked");
+    var sizeCheck3 = $("#over10").attr("checked");
+    var displayCategory;
+    if(sizeCheck1){
+      displayCategory = "under7.1";
+    }
+    else if(sizeCheck2){
+      displayCategory = "7.1-9.9";
+    }
+    else if(sizeCheck3){
+      displayCategory = "over10";
+    }
+    else {
+      displayCategory = "";
+    }
+    var resolutionCategory = $("#resolutionSelect").val();
+    if(resolutionCategory == "none"){
+      resolutionCategory = "";
+    }
+    var weightMin = $("#weightMin").val();
+    var weightMax = $("#weightMax").val();
+    var cpuCategory = $("#cpuSelect1").val();
+    if(cpuCategory == "none"){
+      cpuCategory = "";
+    }
+    var coreCheck1 = $("#1core").attr("checked");
+    var coreCheck2 = $("#2core").attr("checked");
+    var coreCheck3 = $("#4core").attr("checked");
+    var core;
+    if(coreCheck1){
+      core = "1";
+    }
+    else if(coreCheck2){
+      core = "2";
+    }
+    else if(coreCheck3){
+      core = "4";
+    }
+    else {
+      core = "";
+    }
+
+    var param = {
+      "osTag" : osTag,
+      "displayCategory" : displayCategory,
+      "resolutionCategory" : resolutionCategory,
+      "weightMin" : weightMin,
+      "weightMax" : weightMax,
+      "cpuCategory" : cpuCategory,
+      "core" : core,
+      "callback" : "?"
     };
-    global.loading(true);
-    $.post(url, req, VWcallback,"json");
+    //alert(JSON.stringify(param));
+    searchRequest(param);
+  });
+  function searchRequest(param){
+    url = global.url + '/search';
+    req = param;
+    global.loading(true, '検索中…');
+    $.post(url, req, callback, "json");
   }
-  var VWcallback = function(json){
-    if(json === 0){
-      $('#viewsListView').html('<p class="noData">まだコメントはありません</p>');
-      return;
-    }
-    $.each(json, function(i, item) {
-      viewsJson = json;
-      imgName = 'crown' + (i + 1) + '.png';
-      bodyText = this.body.replace(/\r\n/g,"\n");
-      bodyText = bodyText.replace(/\r/g,"\n");
-      bodyText = bodyText.replace(/\n/g,"");
-      if(bodyText.length > 40){
-        bodyText = bodyText.substr(0,40) + "...<span class='moreBody'>　続きあり</span>";
-      }
-      catImg = this.category + '.png';
-      /*
-      bodyText = bodyText.replace(/。/g,"。\n");
-      bodyText = bodyText.replace(/\n\n/g,"\n");
-      caption = bodyText.split("\n");
-      if(caption.length < 3){
-        bodyText = bodyText.replace(/\n/g,"<br>");
-      }
-      else{
-        bodyText = caption[0] + "<br>" + caption[1] + "<span class='moreBody'>　...続きあり</span>";
-      }
-      */
-      message = '<a href="#" class="rankingLink" data-transition="pop" data-rel="popup"><table class="comInfoRank"><tr><td><div id="rankingImg"><img src="htmls/img/' + imgName +'" /></div><div id="rankingCrownNum">' + (i + 1) +'</div></td><td><p class="comTitleRank"><img src="htmls/img/' + catImg +'" /><span>'
-      + this.title
-      + '</span><p class="comBodyRank">'
-      + bodyText//this.body
-      + '</p><p class="comDataRank">アクセス数:'
-      + this.views
-      + '　★'
-      + this.bookmark
-      + '<span class="comTimeRank">日時:'
-      + formatDate(this.date.isoformat)
-      + '</span></p></td></tr></table></a> ';
-      //str = str + message;
-      $('<li>').html(message).appendTo('#viewsListView');
-      message = "";
-    });
-    var more = '<a href="#" class="rankingMore"><div class="moreRank">もっと見る</div></a>';
-    $('<li>').html(more).appendTo('#viewsListView');
-    global.loading(false);
-  };
-  function loadBookmarkRankingList(lim,off){
-    url = "http://em-home.appspot.com/getBookmarkRanking";
-    req = {
-      "limit":lim,
-      "offset":off,
-      "callback":"?"
-    };
-    $.post(url, req, BKcallback,"json");
-  }
-  var BKcallback = function(json){
-    $("#viewBRank1").html('');
-    $("#viewBRank2").html('');
-    $("#viewBRank3").html('');
-    $("#viewBRank1").html(json[0].title + '(' + json[0].rankingBookmark + ')');
-    $("#viewBRank2").html(json[1].title + '(' + json[1].rankingBookmark + ')');
-    $("#viewBRank3").html(json[2].title + '(' + json[2].rankingBookmark + ')');
-  };
-  //ランキングの各ラベルクリック時の処理
-  $(".rankingLink").live("click", function(){
-    var index = $(".rankingLink").index(this);
-    var json = viewsJson[index];
-    var bodyText = json.body.replace(/\r\n/g,"\n");
-    bodyText = bodyText.replace(/\r/g,"\n");
-    bodyText = bodyText.replace(/\n/g,"<br>");
-    viewCountup(json.com_ID);
-    json.views++;
-    //GoogleAnalitics
-    var u = "#comInfoRanking&" + json.title;
-    u ? _gaq.push(['_trackPageview', u]) : _gaq.push(['_trackPageview']);
-    //$("#commentHeaderLabel").html('');
-    $("#commentNameRank").html('');
-    $("#commentTitleRank").html('');
-    $("#commentDateRank").html('');
-    $("#commentBodyTextRank").html('');
-    $("#commentViewsRank").html('');
-    $("#commentBookmarksRank").html('');
-    //$("#commentHeaderLabel").html(json.title);
-    $("#commentNameRank").html("@" + json.name);
-    $("#commentDateRank").html(formatDate(json.date.isoformat));
-    $("#commentTitleRank").html(json.title);
-    $("#commentBodyTextRank").html(bodyText);
-    $("#commentViewsRank").html("アクセス数: " + json.views);
-    $("#commentBookmarksRank").html("いいね: " + json.bookmark);
-    $("#commentPageRank").popup("open");
-    $("#likeButtonRank").attr("name",json.com_ID);
-    bookmarkCount = json.bookmark;
-  });
-  $("#closeButtonRank").live("click", function(){
-    $( "#commentPageRank" ).popup( "close" );
-  });
-  $("#likeButtonRank").live("click", function(){
-    var name;
-    if(global.userName){
-      name = global.userName;
-    }
-    else{
-      name = navigator.userAgent + ' /' + global.ipAdress;
-    }
-    if(bookmarkClick === 0){
-      bookmarkClick++;
-      bookmarkCountup(name,this.name);
-    }
-    else{
-      return;
-    }
-  });
-  function viewCountup(state){
-    url = "http://em-home.appspot.com/addView";
-    req = {
-      "com_ID":state,
-      "callback":"?"
-    };
-    $.post(url, req, callbackView);
-  }
-  var callbackView = function(){
-    //カウント完了のコールバックは特にしない
-  };
-  function bookmarkCountup(name,state){
-    url = "http://em-home.appspot.com/addBookmark";
-    req = {
-      "name":name,
-      "com_ID":state,
-      "callback":"?"
-    };
-    global.loading(true);
-    $.post(url, req, callbackBookmark);
-  }
-  var callbackBookmark = function(res){
-    global.loading(false);
-    if(res == "SUCCEEDED"){
-      $("#commentBookmarks").html("いいね: " + (bookmarkCount+1));
-    }
-    else{
-      global.message('「いいね！」は、ひとつの記事に対して一度だけです');
-    }
-    bookmarkClick = 0;
-  };
-
-  //もっと見るボタン(view)の処理
-  $(".rankingMore").live("click", function(){
-    global.tempCategory = 'ranking';
-    var u = "#list&" + 'rankingMore';
-    u ? _gaq.push(['_trackPageview', u]) : _gaq.push(['_trackPageview']);
-    $.mobile.changePage("#list",{
-      showLoadMsg: true,
-      transition: "none"
-    });
-  });
-
-  //カテゴリボタンクリック時の処理
-  $("#homeListButton").live("click", function(){
-    /*
-    var next = $("#list");
-    location.href = "#list?&" + this.name;
-    localStorage['tempDB'] = this.name;
-    */
-    global.tempCategory = this.name;
-    global.tempCategoryName = this.text;
-    //GoogleAnalitics
-    var u = "#list&" + this.name;
-    u ? _gaq.push(['_trackPageview', u]) : _gaq.push(['_trackPageview']);
-    $.mobile.changePage("#list",{
-      transition: "none"
-    });
-  });
-
-  //ログアウト中に投稿ボタンをクリックした時の処理
-  $("#homeSubmitButtonLogout").live("click", function(){
-    global.message("投稿するにはログインが必要です");
-    /*
-    $.mobile.changePage("#signinPanel",{
-      transition: "slideup"
-    });
-    */
-  });
-
-  //ログインボタンクリック時の処理
-  var flag = 0;
-  $("#signinButton").live("click", function(){
-    if($("#signinUserID").val() !== "" && $("#signinPass").val() !== ""){
-      if(flag === 0){
-        flag++;
-        setTimeout(function(){
-          flag = 0;
-        },5000);
-        url = "http://em-home.appspot.com/login";
-        req = {
-          "name":$("#signinUserID").val(),
-          "pw":$("#signinPass").val(),
-          "callback":"?"
-        };
-        $.post(url, req, callback,"json");
-      }
-    }
-    else{
-      global.message("未入力の項目があります");
-      flag = 0;
-    }
-  });
-  var callback = function(json){
-    if(json === 0){
-      global.message("存在しないユーザー名です");
-      flag = 0;
-    }
-    else if(json === 2){
-      global.message("確認用パスワードが一致しません");
-      flag = 0;
-    }
-    else{
-      document.getElementById("signinUserID").value ='';
-      document.getElementById("signinPass").value ='';
-      flag = 0;
-      location.href = "#home";
-      location.reload(true);
-    }
-  };
-
-  //ログアウトボタンクリック時の処理
-  var outFlag = 0;
-  $("#homeSignoutButton").live("click", function(){
-    if(outFlag === 0){
-      outFlag++;
-      setTimeout(function(){
-        outFlag = 0;
-      },3000);
-      url = "http://em-home.appspot.com/logout";
-      req = {
-        "callback":"?"
-      };
-      $.post(url, req, outCallback,"json");
-    }
-  });
-  var outCallback = function(json){
-    if(json === 0){
-      location.href = "http://em-home.appspot.com/";
-      outFlag = 0;
-    }
-  };
-});
-//ホーム画面の処理おわり
-
-//新規登録処理
-$(function() {
-  var flag = 0;
-  $("#signupButton").click(function() {
-    var cbCheck = $("#agree").attr("checked");
-    if($("#signupUserID").val() !== "" && $("#signupPass").val() !== "" && $("#signupPass2").val() !== ""){
-      if( $("#signupUserID").val().length < 4 || $("#signupUserID").val().length > 30){
-        global.message("ユーザー名は4文字以上、30文字以下でお願いします");
-      }
-      else if($("#signupPass").val().length < 4 || $("#signupPass").val().length > 20){
-        global.message("パスワードは4文字以上、20文字以下でお願いします");
-      }
-      else if($("#signupPass").val() == $("#signupPass2").val()){
-        if(!cbCheck){
-          global.message("利用規約に同意が必要です");
-        }
-        else if(flag === 0){
-          flag++;
-          setTimeout(function(){
-            flag = 0;
-          },5000);
-          url = "http://em-home.appspot.com/register";
-          req = {
-            "name":$("#signupUserID").val(),
-            "pw":$("#signupPass").val(),
-            "displayName":"",
-            "question":"",
-            "answer":"",
-            "introduction":"",
-            "callback":"?"
-          };
-          global.loading(true);
-          $.post(url, req, callback);
-        }
-      }
-      else{
-        global.message("パスワードが一致しません");
-      }
-    }
-    else{
-      global.message("未入力の項目があります");
-    }
-  });
   var callback = function(json){
     global.loading(false);
-    if(json == "0"){
-      global.message("そのユーザー名はすでに使用されています",3000);
-      flag = 0;
-    }else{
-      global.message("ユーザー登録が完了しました");
-      document.getElementById("signupUserID").value ='';
-      document.getElementById("signupPass").value ='';
-      document.getElementById("signupPass2").value ='';
-      flag = 0;
-      setTimeout(function(){
-        location.href = "#home";
-        location.reload(true);
-      },1000);
-    }
+    alert(JSON.stringify(json));
   };
 });
-//新規登録処理おわり
+//検索処理おわり
 
 //新規投稿処理
 $(function() {
@@ -748,81 +503,6 @@ $(function() {
   };
 });
 //list処理終わり
-
-//投稿画面表示の処理
-$(function() {
-  $(document).delegate("#toukou", "pagebeforeshow", function(){
-    if(!global.tempCategory){global.tempCategory = "ochi";}
-    $("#select").val(global.tempCategory);
-    $("#select").selectmenu('refresh',true);
-  });
-});
-//投稿画面表示の処理おわり
-
-//退会画面の処理
-$(function() {
-  var flag = 0;
-  $("#deleteButton").click(function() {
-    var cbCheck = $("#agree").attr("checked");
-    if($("#deletePass").val() !== "" && $("#deletePass2").val() !== ""){
-      if($("#deletePass").val().length < 4 || $("#deletePass").val().length > 20){
-        global.message("正しいパスワードを入力してください");
-      }
-      else if($("#deletePass").val() == $("#deletePass2").val()){
-        if(flag === 0){
-          if(confirm("本当によろしいですか？\n退会後はデータの復旧はできません")){
-            flag++;
-            setTimeout(function(){
-              flag = 0;
-            },5000);
-            url = "http://em-home.appspot.com/deleteUser";
-            req = {
-              "name":"",
-              "pw":$("#deletePass").val(),
-              "callback":"?"
-            };
-            global.loading(true);
-            $.post(url, req, callback);
-          }
-        }
-      }
-      else{
-        global.message("確認用パスワードが一致しません");
-        flag = 0;
-      }
-    }
-    else{
-      global.message("未入力の項目があります");
-      flag = 0;
-    }
-  });
-  var callback = function(json){
-    global.loading(false);
-    if(json == "0"){
-      global.message("退会に失敗しました\n内容を確認してやり直してください",3000);
-      flag = 0;
-    }
-    else if(json == "NOTFOUND" || json == "MEMBERNOTFOUND"){
-      global.message("すでに退会済か存在しないユーザーです");
-      flag = 0;
-    }
-    else if(json == "DELETED"){
-      global.message("退会が完了しました");
-      document.getElementById("deletePass").value ='';
-      document.getElementById("deletePass2").value ='';
-      flag = 0;
-      setTimeout(function(){
-        location.href = "#home";
-        location.reload(true);
-      },1000);
-    }
-    else{
-      global.message("退会に失敗しました\n時間を置いてやり直してください");
-      flag = 0;
-    }
-  };
-});
-//退会画面の処理
 
 //時間変換のファンクション
 function utc2jst(utc) {
