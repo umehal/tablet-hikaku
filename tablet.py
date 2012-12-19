@@ -132,35 +132,6 @@ class Member(db.Model):
   date = db.DateTimeProperty(auto_now_add=True)
   delDate = db.DateTimeProperty(auto_now_add=False)
 
-class Tablet(db.Model):
-  product_ID = db.StringProperty(multiline=False)
-  com_ID = db.StringProperty(multiline=False)
-  registerName = db.StringProperty(multiline=True)
-  productName = db.StringProperty(multiline=True)
-  makerNo = db.StringProperty(multiline=False)
-  manufacturer = db.StringProperty(multiline=True)
-  productUrl = db.StringProperty(multiline=False)
-  img = db.StringProperty(multiline=False)
-  rate = db.StringProperty(multiline=False)
-  releaseDate = db.StringProperty(multiline=False)
-  deviceKind = db.StringProperty(multiline=True)
-  os = db.StringProperty(multiline=True)
-  osTag = db.StringProperty(multiline=False)
-  displaySize = db.StringProperty(multiline=False)
-  weight = db.StringProperty(multiline=False)
-  resolutionShort = db.StringProperty(multiline=False)
-  touchPanel = db.StringProperty(multiline=True)
-  cpu = db.StringProperty(multiline=True)
-  core = db.IntegerProperty()
-  ghz = db.FloatProperty()
-  memory = db.StringProperty(multiline=False)
-  storage = db.StringProperty(multiline=False)
-  views = db.IntegerProperty()
-  rankingViews = db.IntegerProperty()
-  bookmark = db.IntegerProperty()
-  rankingBookmark = db.IntegerProperty()
-  date = db.DateTimeProperty(auto_now_add=True)
-
 class Tablets(db.Model):
   product_ID = db.StringProperty(multiline=False)
   com_ID = db.StringProperty(multiline=False)
@@ -176,10 +147,13 @@ class Tablets(db.Model):
   os = db.StringProperty(multiline=True)
   osTag = db.StringProperty(multiline=False)
   displaySize = db.FloatProperty()
+  displayCategory = db.StringProperty(multiline=False)
   weight = db.IntegerProperty()
   resolutionShort = db.IntegerProperty()
+  resolutionCategory = db.StringProperty(multiline=False)
   touchPanel = db.StringProperty(multiline=True)
   cpu = db.StringProperty(multiline=True)
+  cpuCategory = db.StringProperty(multiline=False)
   core = db.IntegerProperty()
   ghz = db.FloatProperty()
   memory = db.IntegerProperty()
@@ -356,8 +330,15 @@ class postData(BaseSessionRequestHandler):
       displaySize = self.request.get('displaySize').encode('UTF-8')
       if displaySize.replace(".","").isdigit():
         displaySize = float(displaySize)
+        if displaySize >= 10:
+          displayCategory = 'over10'
+        elif displaySize >= 7.1:
+          displayCategory = '7.1-9.9'
+        else:
+          displayCategory = 'under7.1'
       else:
         displaySize = 0
+        displayCategory = 'unknown'
       weight = self.request.get('weight').encode('UTF-8')
       if weight.isdigit():
         weight = int(weight)
@@ -366,8 +347,17 @@ class postData(BaseSessionRequestHandler):
       resolutionShort = self.request.get('resolutionShort').encode('UTF-8')
       if resolutionShort.isdigit():
         resolutionShort = int(resolutionShort)
+        if resolutionShort >= 1200:
+          resolutionCategory = 'over1200'
+        elif resolutionShort >= 800:
+          resolutionCategory = '800-1199'
+        elif resolutionShort >= 600:
+          resolutionCategory = '600-799'
+        else:
+          resolutionCategory = 'under600'
       else:
         resolutionShort = 0
+        resolutionCategory = 'unknown'
       deviceKind = self.request.get('deviceKind').encode('UTF-8')
       os = self.request.get('os').encode('UTF-8')
       touchPanel = self.request.get('touchPanel').encode('UTF-8')
@@ -380,8 +370,17 @@ class postData(BaseSessionRequestHandler):
       ghz = self.request.get('ghz').encode('UTF-8')
       if ghz.replace(".","").isdigit():
         ghz = float(ghz)
+        if ghz >= 1.5:
+          cpuCategory = 'over1.5'
+        elif ghz >= 1.2:
+          cpuCategory = '1.2-1.49'
+        elif ghz >= 1.0:
+          cpuCategory = '1.0-1.19'
+        else:
+          cpuCategory = 'under1.0'
       else:
         ghz = 0
+        cpuCategory = 'unknown'
       memory = self.request.get('memory').encode('UTF-8')
       if memory.isdigit():
         memory = int(memory)
@@ -406,12 +405,15 @@ class postData(BaseSessionRequestHandler):
       tab.os = os.decode('UTF-8')
       tab.osTag = os[0:3].decode('UTF-8')
       tab.displaySize = displaySize
+      tab.displayCategory = displayCategory
       tab.weight = weight
       tab.resolutionShort = resolutionShort
+      tab.resolutionCategory = resolutionCategory
       tab.touchPanel = touchPanel.decode('UTF-8')
       tab.cpu = cpu.decode('UTF-8')
       tab.core = core
       tab.ghz = ghz
+      tab.cpuCategory = cpuCategory
       tab.memory = memory
       tab.storage = storage
       tab.views = 0
