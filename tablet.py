@@ -646,6 +646,81 @@ class getIpAdress(webapp.RequestHandler):
   def post(self):
     ip = os.environ['REMOTE_ADDR']
     self.response.out.write(ip)
+	
+class search(BaseSessionRequestHandler):
+	def post(self):
+	
+		osTag = self.request.get('osTag').encode('UTF-8')
+		displayCategory = self.request.get('displayCategory').encode('UTF-8')
+		resolutionCategory = self.request.get('resolutionCategory').encode('UTF-8')
+		weightMin = self.request.get('weightMin').encode('UTF-8')
+		weightMax = self.request.get('weightMax').encode('UTF-8')
+		cpuCategory = self.request.get('cpuCategory').encode('UTF-8')
+		core = self.request.get('core').encode('UTF-8') 
+		
+		query = "SELECT * FROM Tablets"
+		WHEREflg = 0
+		if osTag:
+			query = query + " WHERE osTag = '" + osTag + "'"
+			WHEREflg = 1
+			
+		if displayCategory:
+			if WHEREflg == 0:
+				query = query + " WHERE"
+				WHEREflg = 1
+			else:
+				query = query + " AND"
+			query = query + " displayCategory = '" + displayCategory + "'" 
+				
+		if resolutionCategory:
+			if WHEREflg == 0:
+				query = query + " WHERE"
+				WHEREflg = 1
+			else:
+				query = query + " AND"
+			query = query + " resolutionCategory = '" + resolutionCategory + "'"
+			
+		if weightMin:
+			if WHEREflg == 0:
+				query = query + " WHERE"
+				WHEREflg = 1
+			else:
+				query = query + " AND"
+			query = query + " weight >= " + weightMin
+			
+		if weightMax:
+			if WHEREflg == 0:
+				query = query + " WHERE"
+				WHEREflg = 1
+			else:
+				query = query + " AND"
+			query = query + " weight <= " + weightMax
+		
+		if cpuCategory:
+			if WHEREflg == 0:
+				query = query + " WHERE"
+				WHEREflg = 1
+			else:
+				query = query + " AND"
+			query = query + " ghz = '" + cpuCategory + "'"
+			
+		if core:
+			if WHEREflg == 0:
+				query = query + " WHERE"
+				WHEREflg = 1
+			else:
+				query = query + " AND"
+			query = query + " core = '" + core  + "'"
+		
+
+		tabs = db.GqlQuery(query)
+		
+		if tabs.count() != 0:		
+			res = gqljson.GqlEncoder(ensure_ascii=False).encode(tabs)
+		else:
+		    res = "0"
+		
+		self.response.out.write(res)
 
 #API Section END
 
@@ -659,6 +734,7 @@ application = webapp.WSGIApplication([('/', BasicAuthentication),
   ('/existUserCheck', existUserCheck),
   ('/deleteUser', deleteUser),
   ('/postData', postData),
+  ('/search', search),
   #('/getCategoryCommentList', getCategoryCommentList),
   #('/getUserCommentList', getUserCommentList),
   #('/addView', addView),
