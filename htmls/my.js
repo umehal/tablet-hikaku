@@ -189,6 +189,9 @@ $(function() {
       core.push("4");
     }
 
+    osTag = arrayToText(osTag);
+    displayCategory = arrayToText(displayCategory);
+    core = arrayToText(core);
     var param = {
       "osTag" : osTag,
       "displayCategory" : displayCategory,
@@ -199,9 +202,21 @@ $(function() {
       "core" : core,
       "callback" : "?"
     };
-    //alert(JSON.stringify(param));
+    alert(JSON.stringify(param));
     searchRequest(param);
   });
+
+  function arrayToText(Array){
+    var res = '';
+    for (var i = 0; i < Array.length; i++) {
+      res += Array[i];
+      if(i !== Array.length - 1){
+        res += ',';
+      }
+    }
+    return res;
+  }
+  
   function searchRequest(param){
     url = global.url + 'search';
     req = param;
