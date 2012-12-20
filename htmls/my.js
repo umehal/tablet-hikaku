@@ -158,6 +158,7 @@ $(function() {
       displayCategory.push("under7.1");
       displayCategory.push("7.1-9.9");
       displayCategory.push("over10");
+      displayCategory.push("unknown");
     }
     var resolutionCategory = $("#resolutionSelect").val();
     if(resolutionCategory == "none"){
