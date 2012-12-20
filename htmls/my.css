@@ -671,6 +671,18 @@ body {
   margin: 10px auto;
 }
 
+#result li {
+  border: 1px solid #DDD;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  /* border-radius: 8px; */
+  /* margin-top: 10px; */
+  background: #FFF;
+  overflow: visible;
+  -webkit-tap-highlight-color: rgba(82, 184, 207, 0.6);
+}
+
 .resultInfo {
   text-align: left;
   margin: 0;

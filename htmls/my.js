@@ -136,7 +136,7 @@ $(function() {
     if(windowsCheck){
       osTag.push("Win");
     }
-    i(!androidCheck && !iosCheck && !windowsCheck){
+    if(!androidCheck && !iosCheck && !windowsCheck){
       osTag.push("And");
       osTag.push("iOS");
       osTag.push("Win");
@@ -172,7 +172,7 @@ $(function() {
     var coreCheck1 = $("#1core").attr("checked");
     var coreCheck2 = $("#2core").attr("checked");
     var coreCheck3 = $("#4core").attr("checked");
-    var core;
+    var core = [];
     if(coreCheck1){
       core.push("1");
     }

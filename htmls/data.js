@@ -130,7 +130,7 @@ $(function() {
             core = "1";
           }
           var ghz2 = cpu.match(/[0-9].[0-9]{1,}GHz/m);
-          if(!ghz2){ghz = 'Unknown';}
+          if(!ghz2){ghz = '0.0';}
           else{ghz = ghz2[0].replace(/GHz/i,"");}
           data.cpu = cpu;
           data.ghz = ghz;

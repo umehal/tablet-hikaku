@@ -368,7 +368,8 @@ class postData(BaseSessionRequestHandler):
       else:
         core = 0
       ghz = self.request.get('ghz').encode('UTF-8')
-      if ghz.replace(".","").isdigit():
+      if ghz.replace(".","") == 0
+      elif ghz.replace(".","").isdigit():
         ghz = float(ghz)
         if ghz >= 1.5:
           cpuCategory = 'over1.5'
@@ -377,7 +378,10 @@ class postData(BaseSessionRequestHandler):
         elif ghz >= 1.0:
           cpuCategory = '1.0-1.19'
         else:
-          cpuCategory = 'under1.0'
+          if ghz == 0.0:
+            cpuCategory = 'unknown'
+          else:
+            cpuCategory = 'under1.0'
       else:
         ghz = 0
         cpuCategory = 'unknown'
