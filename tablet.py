@@ -702,7 +702,7 @@ class search(BaseSessionRequestHandler):
 				WHEREflg = 1
 			else:
 				query = query + " AND"
-			query = query + " ghz = '" + cpuCategory + "'"
+			query = query + " cpuCategory = '" + cpuCategory + "'"
 			
 		if core:
 			if WHEREflg == 0:
@@ -710,7 +710,7 @@ class search(BaseSessionRequestHandler):
 				WHEREflg = 1
 			else:
 				query = query + " AND"
-			query = query + " core = '" + core  + "'"
+			query = query + " core = " + core
 		
 
 		tabs = db.GqlQuery(query)

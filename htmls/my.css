@@ -667,6 +667,62 @@ body {
   margin: 5px;
 }
 
+.result {
+  margin: 10px auto;
+}
+
+.resultInfo {
+  text-align: left;
+  margin: 0;
+  padding: 10px;
+  border: none;
+  overflow: hidden;
+  max-height: 50px;
+}
+
+.resultInfo a {
+  text-decoration: none;
+}
+
+.resultInfo a:link{
+  text-decoration: none;
+}
+
+.productName {
+  margin: 0 0 3px 0;
+  font-weight: bold;
+  font-size: 18px;
+  color: orange;
+}
+
+.os {
+  margin: 2px 0 3px 0;
+  font-size: 80%;
+  color: #000;
+}
+
+.cpu {
+  margin: 2px 0 0 0;
+  font-size: 65%;
+  color: gray;
+}
+
+.height {
+  margin: 0 0 0 10px;
+  font-size: 100%;
+  color: gray;
+}
+
+.displaySize {
+  margin: 0 0 0 10px;
+  font-size: 100%;
+  color: gray;
+}
+
+#matharea {
+  height: 400px;
+}
+
 #weightMin, #weightMax {
   width: 80px;
 }

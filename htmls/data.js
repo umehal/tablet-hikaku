@@ -181,7 +181,103 @@ $(function() {
   };
 });
 
+//データ整形
+$(function() {
+  var dataArray = ["core","cpuCategory","displayCategory","osTag","resolutionCategory"];
+  var outputResult = '';
+  $("#mathButton").click(function() {
+    //alert(combination(5, 3));
+    outputData(dataArray);
+  });
+  function outputData(state){
+    var output = '';
+    for(n = 5; n > 0; n--) {
+      outputDataArray(dataArray, 5, n);
+      /*
+      for(j = combination(5, n); j > 0; j--){
+        output += '- kind: Tablets\n  properties:\n';
+          for(i = 0; i < n; i++) {
+            var x = (i + j) - 1;
+            if(i <= n){i++;}
+            output += '  - name: ' + slice(state,i) + '\n';
+          }
+        output += '  - name: weight\n\n';
+      }
+      */
+    }
+    global.message('ループ完了');
+    document.getElementById("matharea").value = outputResult;
+  }
 
+  function permutation(n, r){
+    for(i = 0, res = 1; i < r; i++){
+      res *= n - i;
+    }
+    return res;
+  }
+  function combination(n, r){
+    return permutation(n, r) / permutation(r, r);
+  }
 
+  function next_perm(p, n, r)
+  {
+    var i, j, k, tmp;
+    if(r <= 0 || n < r) return(false);
+    for(i = r + 1; i <= n-1; i++)
+      for(j = i; j >= r + 1 && p[j-1] < p[j]; j--)
+        tmp = p[j], p[j] = p[j-1], p[j-1] = tmp;
+    for(i = n - 1; i > 0 && p[i-1] >= p[i]; i--);
+    if(!i) return(false);
+    for(j = n - 1; j > i && p[i-1] >= p[j]; j--);
+    tmp = p[i-1], p[i-1] = p[j], p[j] = tmp;
+    for(k = 0; k <= (n-i-1)/2; k++)
+      tmp = p[i+k], p[i+k] = p[n-k-1], p[n-k-1] = tmp;
+    return(true);
+  }
+
+  // xがaの何番目にあるか調べる関数
+  function get_pos(a, x)
+  {
+    var i;
+    for(var i=0; i< a.length; i++)
+      if(a[i]==x) return(i);  // あるときは、0～a.length-1を返す
+    return(-1);               // ないときは、-1を返す
+  }
+
+  // 組合せ生成
+  function next_comb(c, n, r)
+  {
+    var i,j,k;
+    if(r <= 0 || n < r) return(false);
+    var o=new Array(n+1);
+    var p=new Array(n+1);
+    o=c.slice(0).sort();
+    for(i=0; i< n; i++) p[i]='1';
+    for(i=0; i< r; i++)
+      p[get_pos(o,c[i])]='0';
+    var res=next_perm(p, n, n);
+    if(!res) n=0;
+    for(i=j=0,k=r; i< n; i++)
+      if(p[i]=='0') c[j++]=o[i]; else c[k++]=o[i];
+    delete o,p;
+    return(res);
+  }
+  function outputDataArray(Array, N, R){
+    p=Array.slice(0,N).sort();
+
+    var tm=(new Date()).getTime();  // Timer start
+    do{
+      var dText = '';
+      var d = p.slice(0,R);
+      for (i=0; i<d.length; i++) {
+        dText += '  - name: ' + d[i] + '\n';
+      }
+      outputResult += '- kind: Tablets\n  properties:\n' + dText + '  - name: weight\n\n';//  - name: \n
+    }while(next_comb(p,N,R));
+
+    tm=(new Date()).getTime()-tm;  // Timer stop
+  }
+
+});
 
 

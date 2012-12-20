@@ -126,34 +126,38 @@ $(function() {
     var androidCheck = $("#Android").attr("checked");
     var iosCheck = $("#iOS").attr("checked");
     var windowsCheck = $("#Windows").attr("checked");
-    var osTag;
+    var osTag = [];
     if(androidCheck){
-      osTag = "And";
+      osTag.push("And");
     }
-    else if(iosCheck){
-      osTag = "iOS";
+    if(iosCheck){
+      osTag.push("iOS");
     }
-    else if(windowsCheck){
-      osTag = "Win";
+    if(windowsCheck){
+      osTag.push("Win");
     }
-    else {
-      osTag = "";
+    i(!androidCheck && !iosCheck && !windowsCheck){
+      osTag.push("And");
+      osTag.push("iOS");
+      osTag.push("Win");
     }
-    var sizeCheck1 = $("#under7.1").attr("checked");
-    var sizeCheck2 = $("#7.1-9.9").attr("checked");
+    var sizeCheck1 = $("#under71").attr("checked");
+    var sizeCheck2 = $("#71-99").attr("checked");
     var sizeCheck3 = $("#over10").attr("checked");
-    var displayCategory;
+    var displayCategory = [];
     if(sizeCheck1){
-      displayCategory = "under7.1";
+      displayCategory.push("under7.1");
     }
-    else if(sizeCheck2){
-      displayCategory = "7.1-9.9";
+    if(sizeCheck2){
+      displayCategory.push("7.1-9.9");
     }
-    else if(sizeCheck3){
-      displayCategory = "over10";
+    if(sizeCheck3){
+      displayCategory.push("over10");
     }
-    else {
-      displayCategory = "";
+    if(!sizeCheck1 && !sizeCheck2 && !sizeCheck3){
+      displayCategory.push("under7.1");
+      displayCategory.push("7.1-9.9");
+      displayCategory.push("over10");
     }
     var resolutionCategory = $("#resolutionSelect").val();
     if(resolutionCategory == "none"){
@@ -170,16 +174,18 @@ $(function() {
     var coreCheck3 = $("#4core").attr("checked");
     var core;
     if(coreCheck1){
-      core = "1";
+      core.push("1");
     }
-    else if(coreCheck2){
-      core = "2";
+    if(coreCheck2){
+      core.push("2");
     }
-    else if(coreCheck3){
-      core = "4";
+    if(coreCheck3){
+      core.push("4");
     }
-    else {
-      core = "";
+    if(!coreCheck1 && !coreCheck2 && !coreCheck3) {
+      core.push("1");
+      core.push("2");
+      core.push("4");
     }
 
     var param = {
@@ -204,6 +210,26 @@ $(function() {
   var callback = function(json){
     global.loading(false);
     alert(JSON.stringify(json));
+    if(json === 0){
+      $('#result').html('<p class="noData">該当のタブレットが見つかりませんでした</p>');
+      return;
+    }
+    $.each(json, function(i, item) {
+      message = '<a href="#" class="resultLink" data-transition="pop" data-rel="popup"><table class="resultInfo"><tr><td><div id="resultImg"><img src="' + this.img +'" /></div></td><td><p class="productName"><span>'
+      + this.productName
+      + '</span><p class="os">OS:'
+      + this.os
+      + '</p><p class="cpu">CPU:'
+      + this.cpu
+      + '　重さ:'
+      + this.weight
+      + '<span class="displaySize">ディスプレイの大きさ:'
+      + this.displaySize
+      + '</span></p></td></tr></table></a> ';
+      //str = str + message;
+      $('<li>').html(message).appendTo('#result');
+      html = "";
+    });
   };
 });
 //検索処理おわり

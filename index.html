@@ -34,10 +34,10 @@
           <div data-role="fieldcontain">
             <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
             <legend>■サイズ</legend>
-            <input type="checkbox" name="under7.1" id="under7.1" class="custom" />
-            <label for="under7.1">7inch以下</label>
-            <input type="checkbox" name="7.1-9.9" id="7.1-9.9" class="custom" />
-            <label for="7.1-9.9">7.1〜9.9inch</label>
+            <input type="checkbox" name="under71" id="under71" class="custom" />
+            <label for="under71">7inch以下</label>
+            <input type="checkbox" name="71-99" id="71-99" class="custom" />
+            <label for="71-99">7.1〜9.9inch</label>
             <input type="checkbox" name="over10" id="over10" class="custom" />
             <label for="over10">10inch以上</label>
             </fieldset>
@@ -100,7 +100,9 @@
           <a href="#" id="searchButton" onClick="this.disabled = true;" data-theme="e" data-role="button" class="btnStyle2" data-inline="true" data-mini="true">検索する</a>
           </form>
         </div>
-        <div class="result">ここに結果とTwitter検索が出てくる<br>
+        <div class="result">
+          <ul id="result" data-role="listview" data-divider-theme="b" data-inset="false">
+          </ul>
           <!--
           <div class="twitter">
             <a class="twitter-timeline" href="https://twitter.com/search?q=%23%E3%83%8D%E3%82%AF%E3%82%B5%E3%82%B97" data-widget-id="279539802955714560">Tweets about "#ネクサス7"</a>
