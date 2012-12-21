@@ -382,7 +382,7 @@ class postData(BaseSessionRequestHandler):
           else:
             cpuCategory = 'under1.0'
       else:
-        ghz = 0.0
+        ghz = 0
         cpuCategory = 'unknown'
       memory = self.request.get('memory').encode('UTF-8')
       if memory.isdigit():
@@ -649,81 +649,72 @@ class getIpAdress(webapp.RequestHandler):
   def post(self):
     ip = os.environ['REMOTE_ADDR']
     self.response.out.write(ip)
-	
-class search(BaseSessionRequestHandler):
-	def post(self):
-	
-		osTag = self.request.get('osTag').encode('UTF-8')
-		displayCategory = self.request.get('displayCategory').encode('UTF-8')
-		resolutionCategory = self.request.get('resolutionCategory').encode('UTF-8')
-		weightMin = self.request.get('weightMin').encode('UTF-8')
-		weightMax = self.request.get('weightMax').encode('UTF-8')
-		cpuCategory = self.request.get('cpuCategory').encode('UTF-8')
-		core = self.request.get('core').encode('UTF-8') 
-		
-		query = "SELECT * FROM Tablets"
-		WHEREflg = 0
-		if osTag:
-			query = query + " WHERE osTag = '" + osTag + "'"
-			WHEREflg = 1
-			
-		if displayCategory:
-			if WHEREflg == 0:
-				query = query + " WHERE"
-				WHEREflg = 1
-			else:
-				query = query + " AND"
-			query = query + " displayCategory = '" + displayCategory + "'" 
-				
-		if resolutionCategory:
-			if WHEREflg == 0:
-				query = query + " WHERE"
-				WHEREflg = 1
-			else:
-				query = query + " AND"
-			query = query + " resolutionCategory = '" + resolutionCategory + "'"
-			
-		if weightMin:
-			if WHEREflg == 0:
-				query = query + " WHERE"
-				WHEREflg = 1
-			else:
-				query = query + " AND"
-			query = query + " weight >= " + weightMin
-			
-		if weightMax:
-			if WHEREflg == 0:
-				query = query + " WHERE"
-				WHEREflg = 1
-			else:
-				query = query + " AND"
-			query = query + " weight <= " + weightMax
-		
-		if cpuCategory:
-			if WHEREflg == 0:
-				query = query + " WHERE"
-				WHEREflg = 1
-			else:
-				query = query + " AND"
-			query = query + " cpuCategory = '" + cpuCategory + "'"
-			
-		if core:
-			if WHEREflg == 0:
-				query = query + " WHERE"
-				WHEREflg = 1
-			else:
-				query = query + " AND"
-			query = query + " core = " + core
-		
 
-		tabs = db.GqlQuery(query)
-		
-		if tabs.count() != 0:		
-			res = gqljson.GqlEncoder(ensure_ascii=False).encode(tabs)
-		else:
-		    res = "0"
-		
-		self.response.out.write(res)
+class search(BaseSessionRequestHandler):
+  def post(self):
+  
+    osTag = self.request.get('osTag').encode('UTF-8')
+    displayCategory = self.request.get('displayCategory').encode('UTF-8')
+    resolutionCategory = self.request.get('resolutionCategory').encode('UTF-8')
+    weightMin = self.request.get('weightMin').encode('UTF-8')
+    weightMax = self.request.get('weightMax').encode('UTF-8')
+    cpuCategory = self.request.get('cpuCategory').encode('UTF-8')
+    core = self.request.get('core').encode('UTF-8')
+    
+    query = "SELECT * FROM Tablets"
+    WHEREflg = 0
+    
+    L = 1
+    osL = 0
+    displayL = 0
+    resolutionL = 0
+    cpuL = 0
+    coreL = 0
+    
+    osList = []
+    displayList = []
+    resolutionList = ["under600","600-799","800-1199","over1200"]
+    cpuList = ["over1.5","1.2-1.49","1.0-1.19","under1.0"]
+    coreList = []
+    
+    osList = osTag.split(",")
+    query = query + " WHERE osTag IN :1"
+    osL = 1
+      
+    displayList = displayCategory.split(",")
+    query = query + " AND displayCategory IN :2"
+        
+    if resolutionCategory:
+      resolutionList = resolutionCategory.split(",")
+    query = query + " AND resolutionCategory IN :3"
+        
+    if weightMin:
+      query = query + " AND weight >= " + str(weightMin)
+    else:
+      query = query + " AND weight >= 0"
+      
+    if weightMax:
+      query = query + " AND weight <= " + str(weightMax)
+    else:
+      query = query + " AND weight <= 100000"
+    
+    if cpuCategory:
+      cpuList = cpuCategory.split(",")
+    query = query + " AND cpuCategory IN :4"
+    
+    coreList = core.split(",")
+    query = query + " AND core IN :5"
+    coreL = 1
+    
+    
+    tabs = db.GqlQuery(query,osList,displayList,resolutionList,cpuList,coreList)
+    
+    if tabs.count() != 0:
+      res = gqljson.GqlEncoder(ensure_ascii=False).encode(tabs)
+    else:
+        res = "0"
+    self.response.out.write(res)
+    
 
 #API Section END
 

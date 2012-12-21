@@ -123,6 +123,7 @@ var ipCallback = function(json){
 $(function() {
   //検索処理
   $("#searchButton").click(function() {
+    $("#result").html('<center><h4 class="Loading">読み込み中…</h4></center>');
     var androidCheck = $("#Android").attr("checked");
     var iosCheck = $("#iOS").attr("checked");
     var windowsCheck = $("#Windows").attr("checked");
@@ -136,11 +137,13 @@ $(function() {
     if(windowsCheck){
       osTag.push("Win");
     }
+    /*
     if(!androidCheck && !iosCheck && !windowsCheck){
       osTag.push("And");
       osTag.push("iOS");
       osTag.push("Win");
     }
+    */
     var sizeCheck1 = $("#under71").attr("checked");
     var sizeCheck2 = $("#71-99").attr("checked");
     var sizeCheck3 = $("#over10").attr("checked");
@@ -154,12 +157,14 @@ $(function() {
     if(sizeCheck3){
       displayCategory.push("over10");
     }
+    /*
     if(!sizeCheck1 && !sizeCheck2 && !sizeCheck3){
       displayCategory.push("under7.1");
       displayCategory.push("7.1-9.9");
       displayCategory.push("over10");
       displayCategory.push("unknown");
     }
+    */
     var resolutionCategory = $("#resolutionSelect").val();
     if(resolutionCategory == "none"){
       resolutionCategory = "";
@@ -183,15 +188,21 @@ $(function() {
     if(coreCheck3){
       core.push("4");
     }
+    /*
     if(!coreCheck1 && !coreCheck2 && !coreCheck3) {
       core.push("1");
       core.push("2");
       core.push("4");
     }
+    */
 
     osTag = arrayToText(osTag);
     displayCategory = arrayToText(displayCategory);
     core = arrayToText(core);
+    if(osTag === "" && displayCategory === "" && core === "" && resolutionCategory === "" && weightMax === "" && weightMin === "" && cpuCategory === ""){
+      $('#result').html('<p class="noData">条件を指定してください</p>');
+      return;
+    }
     var param = {
       "osTag" : osTag,
       "displayCategory" : displayCategory,
@@ -202,7 +213,7 @@ $(function() {
       "core" : core,
       "callback" : "?"
     };
-    alert(JSON.stringify(param));
+    //alert(JSON.stringify(param));
     searchRequest(param);
   });
 
@@ -225,28 +236,55 @@ $(function() {
   }
   var callback = function(json){
     global.loading(false);
-    alert(JSON.stringify(json));
+    $("#result").html('<center><h4 class="Loading">検索結果 : ' + json.length +'件</h4></center>');
+    //alert(JSON.stringify(json));
     if(json === 0){
       $('#result').html('<p class="noData">該当のタブレットが見つかりませんでした</p>');
       return;
     }
     $.each(json, function(i, item) {
-      message = '<a href="#" class="resultLink" data-transition="pop" data-rel="popup"><table class="resultInfo"><tr><td><div id="resultImg"><img src="' + this.img +'" /></div></td><td><p class="productName"><span>'
+      var tempKey = this.productName.split('　');
+      var key = tempKey[0];
+      var urlKeyword = this.productName.replace(/\s/g," ");
+      urlKeyword = urlKeyword.replace(/\(\D+\)/g,"");
+      urlKeyword = urlKeyword.replace(/[\(\)\-\_\*]/g,"");
+      urlKeyword = encodeURIComponent(urlKeyword);
+      message = '<a href="http://www.amazon.co.jp/s/ref=nb_sb_noss_2?__mk_ja_JP=' + urlKeyword + '&url=search-alias%3Daps&field-keywords=' + urlKeyword +'&x=0&Ay=0" class="resultLink" data-transition="pop" data-rel="popup" target="new"><table class="resultInfo"><tr><td><div id="resultImg"><img src="' + this.img +'" /></div></td><td><p class="productName"><span>'
       + this.productName
       + '</span><p class="os">OS:'
       + this.os
       + '</p><p class="cpu">CPU:'
       + this.cpu
-      + '　重さ:'
+      + '　<br>重さ:'
       + this.weight
-      + '<span class="displaySize">ディスプレイの大きさ:'
+      + 'グラム<br><span class="displaySize">ディスプレイの大きさ:'
       + this.displaySize
-      + '</span></p></td></tr></table></a> ';
+      + 'インチ</span></p></td></tr></table></a><div class="twitterP"><a href="#" id="twitterOpen" name="' + key + '" className="' + i + '">ツイッターでの評判を見る</a></div><div id="twitterContent' + i + '" style="display: none">ツイッターの検索結果<br><div id="twitter_search' + i + '"><div class="attweets"><span class="keywordInfo' + i + '">読み込み中…</span></div></div></div>';
       //str = str + message;
       $('<li>').html(message).appendTo('#result');
       html = "";
     });
   };
+  $("#twitterOpen").live("click", function() {
+    var i = $(this).attr("className");
+    var key = this.name;
+    var id = "#twitterContent" + i;
+    var id2 = "#twitter_search"  + i;
+    var keyInfo = ".keywordInfo" + i;
+    var a = $(this).html();
+    if(a == 'ツイッターでの評判を見る'){
+      $(this).html('閉じる');
+      $(keyInfo).html(key + ' の検索結果');
+      $(id2).ATTwitterSearch({
+        q : key,
+        view : 5
+      });
+    }
+    else{
+      $(this).html('ツイッターでの評判を見る');
+    }
+    $(id).toggle();
+  });
 });
 //検索処理おわり
 

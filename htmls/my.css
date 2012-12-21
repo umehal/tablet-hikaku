@@ -632,6 +632,10 @@ body {
 }
 
 /* dataImportPage */
+body, #home {
+  background: #f0f0f0;
+}
+
 #explain {
   margin-bottom: 20px;
 }
@@ -648,6 +652,7 @@ body {
   margin: auto;
   font-size: 90%;
   width: 95%;
+  /* background: #FFF; */
 }
 
 .searchArea select{
@@ -664,11 +669,11 @@ body {
 }
 
 #searchButton {
-  margin: 5px;
+  margin: 5px 0 10px 0;
 }
 
 .result {
-  margin: 10px auto;
+  margin: 20px auto;
 }
 
 #result li {
@@ -680,7 +685,7 @@ body {
   /* margin-top: 10px; */
   background: #FFF;
   overflow: visible;
-  -webkit-tap-highlight-color: rgba(82, 184, 207, 0.6);
+  -webkit-tap-highlight-color: rgba(82, 184, 207, 0.4);
 }
 
 .resultInfo {
@@ -726,13 +731,9 @@ body {
 }
 
 .displaySize {
-  margin: 0 0 0 10px;
+  margin: 0;
   font-size: 100%;
   color: gray;
-}
-
-#matharea {
-  height: 400px;
 }
 
 #weightMin, #weightMax {
@@ -743,4 +744,84 @@ body {
   text-align: center;
   margin: 10px auto;
   width: 90%;
+}
+
+.twitterP {
+  text-align: center;
+  margin: 10px 10px;
+  min-width: 200px;
+}
+
+#twitterOpen {
+  color: blue;
+  font-size: 70%;
+  margin: 0 0 0 5px;
+  padding: 3px;
+  border-radius: 2px;
+  background: #eee;
+}
+
+#matharea {
+  height: 400px;
+}
+
+.attweets span {
+  color: orange;
+  font-size: 110%;
+}
+
+/* demo */
+#twitter,
+#twitter_search,
+#twitter_hash {
+  width: 90%;
+  height: 200px;
+  overflow: auto;
+  color: #666;
+  border: 1px solid #CCC;
+}
+
+.atloading {
+  text-align: center;
+  padding: 10px;
+}
+
+.attweets {
+  font-size: 12px;
+}
+
+.attweet {
+  clear: both;
+  padding: 10px;
+  border-bottom: 1px solid #EEE;
+  background: #FFF;
+}
+
+.attweet:after {
+  content: ".";
+  display: block;
+  clear: both;
+  height: 0;
+  visibility: hidden;
+}
+.attweet { display: inline-block; }
+/* exlude MacIE5 \*/
+* html .attweet { height: 1% }
+.attweet {display:block;}
+/* end MacIE5 */
+
+.attweets .atphoto {
+  float: left;
+  width: 48px;
+  margin: 0;
+  padding: 1px;
+  border: 1px solid #CCC;
+}
+
+.attweets .attext {
+  margin: 0 0 1em 62px;
+}
+
+.attweets .atstatus {
+  margin: 0 0 0 62px;
 }
