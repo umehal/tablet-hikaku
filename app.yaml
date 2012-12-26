@@ -15,6 +15,9 @@ handlers:
 - url: /admin
   static_dir: admin/(.html)
 
+- url: /sencha
+  static_dir: sencha/(.html)
+
 - url: /cron/.*
   script: cron.application
   login: admin

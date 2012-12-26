@@ -93,7 +93,40 @@ class admin(BaseSessionRequestHandler):
       code = 401
       self.error(code)
       self.response.out.write(self.response.http_status_message(code))
-            
+
+  def __basicAuth(self):
+    auth_header = self.request.headers.get('Authorization')
+    if auth_header:
+      try:
+        (scheme, base64) = auth_header.split(' ')
+        if scheme != 'Basic':
+          return False
+        (username, password) = b64decode(base64).split(':')
+        if username == 'tullys' and password == 'coffee':
+          return True
+      except (ValueError, TypeError), err:
+        logging.warn(type(err))
+        return False
+
+class sencha(BaseSessionRequestHandler):
+  def get(self):
+    if self.__basicAuth():
+    
+        if self.session.get('username',0):
+          username = self.session.get('username',0)
+          self.session['username'] = username
+          path = os.path.join(os.path.dirname(__file__), 'sencha/index.html')
+          template_values = {'username':username}
+        else:
+          path = os.path.join(os.path.dirname(__file__), 'sencha/index.html')
+          template_values = {}
+    
+        self.response.out.write(template.render(path, template_values))
+    else:
+      code = 401
+      self.error(code)
+      self.response.out.write(self.response.http_status_message(code))
+
   def __basicAuth(self):
     auth_header = self.request.headers.get('Authorization')
     if auth_header:
@@ -730,6 +763,7 @@ class search(BaseSessionRequestHandler):
 #Handler Section
 application = webapp.WSGIApplication([('/', BasicAuthentication),
   ('/admin', admin),
+  ('/sencha', sencha),
   ('/checkSession', checkSession),
   ('/register', register),
   ('/login', login),

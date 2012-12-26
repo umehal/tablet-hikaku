@@ -137,13 +137,12 @@ $(function() {
     if(windowsCheck){
       osTag.push("Win");
     }
-    /*
     if(!androidCheck && !iosCheck && !windowsCheck){
       osTag.push("And");
       osTag.push("iOS");
       osTag.push("Win");
     }
-    */
+
     var sizeCheck1 = $("#under71").attr("checked");
     var sizeCheck2 = $("#71-99").attr("checked");
     var sizeCheck3 = $("#over10").attr("checked");
@@ -157,14 +156,13 @@ $(function() {
     if(sizeCheck3){
       displayCategory.push("over10");
     }
-    /*
     if(!sizeCheck1 && !sizeCheck2 && !sizeCheck3){
       displayCategory.push("under7.1");
       displayCategory.push("7.1-9.9");
       displayCategory.push("over10");
       displayCategory.push("unknown");
     }
-    */
+
     var resolutionCategory = $("#resolutionSelect").val();
     if(resolutionCategory == "none"){
       resolutionCategory = "";
@@ -188,13 +186,11 @@ $(function() {
     if(coreCheck3){
       core.push("4");
     }
-    /*
     if(!coreCheck1 && !coreCheck2 && !coreCheck3) {
       core.push("1");
       core.push("2");
       core.push("4");
     }
-    */
 
     osTag = arrayToText(osTag);
     displayCategory = arrayToText(displayCategory);
@@ -243,13 +239,17 @@ $(function() {
       return;
     }
     $.each(json, function(i, item) {
+      var img = this.img;
+      if(this.img === '' || this.img === 'http://www.coneco.net/images/noimg.gif'){
+        img = 'htmls/img/noimage.jpg';
+      }
       var tempKey = this.productName.split('　');
       var key = tempKey[0];
       var urlKeyword = this.productName.replace(/\s/g," ");
       urlKeyword = urlKeyword.replace(/\(\D+\)/g,"");
       urlKeyword = urlKeyword.replace(/[\(\)\-\_\*]/g,"");
       urlKeyword = encodeURIComponent(urlKeyword);
-      message = '<a href="http://www.amazon.co.jp/s/ref=nb_sb_noss_2?__mk_ja_JP=' + urlKeyword + '&url=search-alias%3Daps&field-keywords=' + urlKeyword +'&x=0&Ay=0" class="resultLink" data-transition="pop" data-rel="popup" target="new"><table class="resultInfo"><tr><td><div id="resultImg"><img src="' + this.img +'" /></div></td><td><p class="productName"><span>'
+      message = '<a href="#" class="resultLink" data-transition="pop" data-rel="popup" target="new"><table class="resultInfo"><tr><td><div id="resultImg"><img src="' + img +'" /></div></td><td><p class="productName"><span>'
       + this.productName
       + '</span><p class="os">OS:'
       + this.os
@@ -259,7 +259,7 @@ $(function() {
       + this.weight
       + 'グラム<br><span class="displaySize">ディスプレイの大きさ:'
       + this.displaySize
-      + 'インチ</span></p></td></tr></table></a><div class="twitterP"><a href="#" id="twitterOpen" name="' + key + '" className="' + i + '">ツイッターでの評判を見る</a></div><div id="twitterContent' + i + '" style="display: none">ツイッターの検索結果<br><div id="twitter_search' + i + '"><div class="attweets"><span class="keywordInfo' + i + '">読み込み中…</span></div></div></div>';
+      + 'インチ</span></p></td></tr></table></a><div class="amazonP"><a href="http://www.amazon.co.jp/s/ref=nb_sb_noss_2?__mk_ja_JP=' + urlKeyword + '&url=search-alias%3Daps&field-keywords=' + urlKeyword +'&x=0&Ay=0" id="amazon"><img src="htmls/img/amazon_so.png" />アマゾンで検索する</a></div><div class="twitterP"><a href="#" id="twitterOpen" name="' + key + '" className="' + i + '"><img src="htmls/img/twitter_so.png" />ツイッターでの評判を見る</a></div><div id="twitterContent' + i + '" style="display: none"><p class="keywordP"><span class="keywordInfo' + i + '">読み込み中…</span></p><div id="twitter_search' + i + '"><div class="attweets"></div></div></div>';
       //str = str + message;
       $('<li>').html(message).appendTo('#result');
       html = "";
@@ -272,16 +272,17 @@ $(function() {
     var id2 = "#twitter_search"  + i;
     var keyInfo = ".keywordInfo" + i;
     var a = $(this).html();
-    if(a == 'ツイッターでの評判を見る'){
-      $(this).html('閉じる');
-      $(keyInfo).html(key + ' の検索結果');
+    if(a == '<img src="htmls/img/twitter_so.png">ツイッターでの評判を見る'){
+      $(this).html('<img src="htmls/img/twitter_so.png" />閉じる');
+      $(id2 + ' div').html('');
       $(id2).ATTwitterSearch({
         q : key,
         view : 5
       });
+      $(keyInfo).html(key + ' の検索結果');
     }
     else{
-      $(this).html('ツイッターでの評判を見る');
+      $(this).html('<img src="htmls/img/twitter_so.png" />ツイッターでの評判を見る');
     }
     $(id).toggle();
   });

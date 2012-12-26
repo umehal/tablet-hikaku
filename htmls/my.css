@@ -746,6 +746,27 @@ body, #home {
   width: 90%;
 }
 
+.amazonP {
+  text-align: center;
+  margin: 10px 10px;
+  min-width: 200px;
+}
+
+#amazon {
+  color: blue;
+  font-size: 70%;
+  margin: 0 0 0 5px;
+  padding: 3px;
+  border-radius: 2px;
+  background: #eee;
+}
+
+#amazon img{
+  margin: 0 5px 0 0;
+  width: 30px;
+  height: 30px;
+}
+
 .twitterP {
   text-align: center;
   margin: 10px 10px;
@@ -761,13 +782,19 @@ body, #home {
   background: #eee;
 }
 
+#twitterOpen img{
+  margin: 0 5px 0 0;
+  width: 30px;
+  height: 30px;
+}
+
 #matharea {
   height: 400px;
 }
 
-.attweets span {
+.keywordP span {
   color: orange;
-  font-size: 110%;
+  font-size: 90%;
 }
 
 /* demo */
@@ -794,7 +821,12 @@ body, #home {
   clear: both;
   padding: 10px;
   border-bottom: 1px solid #EEE;
-  background: #FFF;
+  background: #FFE;
+}
+
+.tweetlink {
+  overflow: visible;
+  -webkit-tap-highlight-color: rgba(82, 184, 207, 0.4);
 }
 
 .attweet:after {
@@ -820,8 +852,10 @@ body, #home {
 
 .attweets .attext {
   margin: 0 0 1em 62px;
+  text-align: left;
 }
 
 .attweets .atstatus {
   margin: 0 0 0 62px;
+  text-align: left;
 }

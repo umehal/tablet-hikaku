@@ -45,18 +45,17 @@ Author : Masahiro Abe
 			}
 
 			function twitterLoad(json) {
-				//json取得できた場合
-				if (json === ''){
-					setTimeout(function() {
-						$(options.tweets, _self).append('<div class="attweet">結果が見つかりませんでした</div>');
-					}, 500);
-				}
-				else if (json) {
+				if (json) {
 					loadingView();
 					setTimeout(function() {
 						var twitterContents = '';
-						for (var i = 0; i < json.length; i++) {
-							twitterContents += tweetHTML(json[i]);
+						if(json.length === 0){
+							twitterContents += '<div class="attweet"><p>結果が見つかりませんでした</p></div>';
+						}
+						else{
+							for (var i = 0; i < json.length; i++) {
+								twitterContents += tweetHTML(json[i]);
+							}
 						}
 						
 						$(options.tweets, _self).append(twitterContents);
@@ -69,11 +68,11 @@ Author : Masahiro Abe
 			// ツイート一件分作成
 			function tweetHTML(jsonData) {
 				var template = '';
-				template += '<div class="attweet">';
+				template += '<a href="' + 'https://twitter.com/#!/' + jsonData.screen_name + '/status/' + jsonData.id_str + '" target="_blank" " class="tweetlink"><div class="attweet">';
 				template += '<p class="atphoto"><a href="http://twitter.com/#!/' + jsonData.from_user + '" target="_blank"><img src="' + jsonData.profile_image_url + '" /></a></p>';
 				template += '<p class="attext">' + formatTwitterString(jsonData.text) + '</p>';
 				template += '<p class="atstatus"><a href="https://twitter.com/#!/' + jsonData.screen_name + '/status/' + jsonData.id_str + '" target="_blank">' + elapsedDate(jsonData.created_at) + '</a>　' + linkSetting(jsonData.source) + 'から</p>';
-				template += '</div>';
+				template += '</div></a>';
 				return template;
 			}
 
