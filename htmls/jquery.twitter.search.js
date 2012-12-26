@@ -68,11 +68,11 @@ Author : Masahiro Abe
 			// ツイート一件分作成
 			function tweetHTML(jsonData) {
 				var template = '';
-				template += '<a href="' + 'https://twitter.com/#!/' + jsonData.screen_name + '/status/' + jsonData.id_str + '" target="_blank" " class="tweetlink"><div class="attweet">';
+				template += '<div class="attweet">';
 				template += '<p class="atphoto"><a href="http://twitter.com/#!/' + jsonData.from_user + '" target="_blank"><img src="' + jsonData.profile_image_url + '" /></a></p>';
-				template += '<p class="attext">' + formatTwitterString(jsonData.text) + '</p>';
+				template += '<p class="attext"><a href="' + 'https://twitter.com/#!/' + jsonData.screen_name + '/status/' + jsonData.id_str + '" target="_blank" class="tweetlink">' + formatTwitterString(jsonData.text) + '</a></p>';
 				template += '<p class="atstatus"><a href="https://twitter.com/#!/' + jsonData.screen_name + '/status/' + jsonData.id_str + '" target="_blank">' + elapsedDate(jsonData.created_at) + '</a>　' + linkSetting(jsonData.source) + 'から</p>';
-				template += '</div></a>';
+				template += '</div>';
 				return template;
 			}
 

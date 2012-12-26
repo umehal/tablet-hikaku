@@ -685,7 +685,7 @@ body, #home {
   /* margin-top: 10px; */
   background: #FFF;
   overflow: visible;
-  -webkit-tap-highlight-color: rgba(82, 184, 207, 0.4);
+  /* -webkit-tap-highlight-color: rgba(82, 184, 207, 0.4);　*/
 }
 
 .resultInfo {
@@ -720,7 +720,7 @@ body, #home {
 
 .cpu {
   margin: 2px 0 0 0;
-  font-size: 65%;
+  font-size: 75%;
   color: gray;
 }
 
@@ -748,7 +748,7 @@ body, #home {
 
 .amazonP {
   text-align: center;
-  margin: 10px 10px;
+  margin: -10px 0 5px 0;
   min-width: 200px;
 }
 
@@ -759,6 +759,7 @@ body, #home {
   padding: 3px;
   border-radius: 2px;
   background: #eee;
+  -webkit-tap-highlight-color: rgba(82, 184, 207, 0.4)
 }
 
 #amazon img{
@@ -769,7 +770,7 @@ body, #home {
 
 .twitterP {
   text-align: center;
-  margin: 10px 10px;
+  margin: 0px 0 10px 0;
   min-width: 200px;
 }
 
@@ -780,6 +781,7 @@ body, #home {
   padding: 3px;
   border-radius: 2px;
   background: #eee;
+  -webkit-tap-highlight-color: rgba(82, 184, 207, 0.4)
 }
 
 #twitterOpen img{
@@ -793,14 +795,16 @@ body, #home {
 }
 
 .keywordP span {
+  margin: 10px 0 0 0;
   color: orange;
-  font-size: 90%;
+  font-size: 85%;
 }
 
 /* demo */
 #twitter,
 #twitter_search,
 #twitter_hash {
+  margin: 0;
   width: 90%;
   height: 200px;
   overflow: auto;
@@ -810,23 +814,30 @@ body, #home {
 
 .atloading {
   text-align: center;
-  padding: 10px;
 }
 
 .attweets {
+  margin: 0;
   font-size: 12px;
+  border-width: 2px;
+  border-radius: 3px;
+  border-color: #000;
 }
 
 .attweet {
   clear: both;
+  margin: 0 5px 5px 5px;
   padding: 10px;
-  border-bottom: 1px solid #EEE;
+  border: 1.5px solid #EEE;
+  border-radius: 7px;
   background: #FFE;
+  -webkit-tap-highlight-color: rgba(82, 184, 207, 0.4);
 }
 
 .tweetlink {
   overflow: visible;
-  -webkit-tap-highlight-color: rgba(82, 184, 207, 0.4);
+  text-decoration: none;
+  color: #111;
 }
 
 .attweet:after {

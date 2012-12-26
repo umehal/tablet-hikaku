@@ -195,7 +195,7 @@ $(function() {
     osTag = arrayToText(osTag);
     displayCategory = arrayToText(displayCategory);
     core = arrayToText(core);
-    if(osTag === "" && displayCategory === "" && core === "" && resolutionCategory === "" && weightMax === "" && weightMin === "" && cpuCategory === ""){
+    if(osTag === "And,iOS,Win" && displayCategory === "under7.1,7.1-9.9,over10,unknown" && core === "1,2,4" && resolutionCategory === "" && weightMax === "" && weightMin === "" && cpuCategory === ""){
       $('#result').html('<p class="noData">条件を指定してください</p>');
       return;
     }
