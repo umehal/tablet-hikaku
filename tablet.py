@@ -686,77 +686,44 @@ class getIpAdress(webapp.RequestHandler):
 class search(BaseSessionRequestHandler):
 	def post(self):
 	
-		osTag = self.request.get('osTag').encode('UTF-8')
-		displayCategory = self.request.get('displayCategory').encode('UTF-8')
-		resolutionCategory = self.request.get('resolutionCategory').encode('UTF-8')
+		osTag = self.request.get('osTag')
+		displayCategory = self.request.get('displayCategory')
+		resolutionCategory = self.request.get('resolutionCategory')
 		weightMin = self.request.get('weightMin').encode('UTF-8')
 		weightMax = self.request.get('weightMax').encode('UTF-8')
-		cpuCategory = self.request.get('cpuCategory').encode('UTF-8')
-		core = self.request.get('core').encode('UTF-8') 
+		cpuCategory = self.request.get('cpuCategory')
+		core = self.request.get('core')
 		
-		query = "SELECT * FROM Tablets"
-		WHEREflg = 0
-		if osTag:
-			query = query + " WHERE osTag = '" + osTag + "'"
-			WHEREflg = 1
-			
-		if displayCategory:
-			if WHEREflg == 0:
-				query = query + " WHERE"
-				WHEREflg = 1
-			else:
-				query = query + " AND"
-			query = query + " displayCategory = '" + displayCategory + "'" 
-				
-		if resolutionCategory:
-			if WHEREflg == 0:
-				query = query + " WHERE"
-				WHEREflg = 1
-			else:
-				query = query + " AND"
-			query = query + " resolutionCategory = '" + resolutionCategory + "'"
-			
+		osList = []
+		displayList = []
+		coreList = []
+		List = []
+		
+		osList = osTag.split(",")
+		displayList = displayCategory.split(",")
+		coreList = core.split(",")
+		
+		for x in coreList:
+			List.append(int(x))
+		
+		tabData = Tablets.all()
+		if len(osList) <3:
+			tabData.filter("osTag IN",osList)
+		if len(displayList) <3:
+			tabData.filter("displayCategory IN",displayList)
+		if len(coreList) < 3:
+			tabData.filter("core IN",List)
+		
 		if weightMin:
-			if WHEREflg == 0:
-				query = query + " WHERE"
-				WHEREflg = 1
-			else:
-				query = query + " AND"
-			query = query + " weight >= " + weightMin
-			
+			tabData.filter("weight >=",int(weightMin))
 		if weightMax:
-			if WHEREflg == 0:
-				query = query + " WHERE"
-				WHEREflg = 1
-			else:
-				query = query + " AND"
-			query = query + " weight <= " + weightMax
-		
+			tabData.filter("weight <=",int(weightMax))
+		if resolutionCategory:
+			tabData.filter("resolutionCategory =",resolutionCategory)
 		if cpuCategory:
-			if WHEREflg == 0:
-				query = query + " WHERE"
-				WHEREflg = 1
-			else:
-				query = query + " AND"
-			query = query + " cpuCategory = '" + cpuCategory + "'"
+			tabData.filter("cpuCategory =",cpuCategory)
 			
-		if core:
-			if WHEREflg == 0:
-				query = query + " WHERE"
-				WHEREflg = 1
-			else:
-				query = query + " AND"
-			query = query + " core = " + core
-		
-
-		tabs = db.GqlQuery(query)
-		
-		if tabs.count() != 0:		
-			res = gqljson.GqlEncoder(ensure_ascii=False).encode(tabs)
-		else:
-		    res = "0"
-		
-		self.response.out.write(res)
+		self.response.out.write(gqljson.encode(tabData))
 
 #API Section END
 

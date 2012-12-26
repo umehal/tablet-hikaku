@@ -34,7 +34,7 @@ class GqlEncoder(json.JSONEncoder):
     if hasattr(obj, '__json__'):
       return getattr(obj, '__json__')()
 
-    if isinstance(obj, db.GqlQuery):
+    if isinstance(obj, db.GqlQuery) or isinstance(obj, db.Query):
       return list(obj)
 
     elif isinstance(obj, db.Model):
