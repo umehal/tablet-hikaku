@@ -169,6 +169,16 @@ $(function() {
     }
     var weightMin = $("#weightMin").val();
     var weightMax = $("#weightMax").val();
+    if(weightMin === "0"){
+      weightMin = "1";
+    }
+    if(weightMax === "0"){
+      weightMax = "1";
+    }
+    if(weightMax && !weightMin){
+      weightMin = "1";
+    }
+
     var cpuCategory = $("#cpuSelect1").val();
     if(cpuCategory == "none"){
       cpuCategory = "";
@@ -197,6 +207,11 @@ $(function() {
     core = arrayToText(core);
     if(osTag === "And,iOS,Win" && displayCategory === "under7.1,7.1-9.9,over10,unknown" && core === "1,2,4" && resolutionCategory === "" && weightMax === "" && weightMin === "" && cpuCategory === ""){
       $('#result').html('<p class="noData">条件を指定してください</p>');
+      return;
+    }
+    else if(!isFinite(weightMax) || !isFinite(weightMin) || weightMin < 0 || weightMax < 0){
+      alert('重さには半角数字の自然数のみ使用できます');
+      $('#result').html('<p class="noData">条件を修正してください</p>');
       return;
     }
     var param = {
@@ -243,6 +258,13 @@ $(function() {
       if(this.img === '' || this.img === 'http://www.coneco.net/images/noimg.gif'){
         img = 'htmls/img/noimage.jpg';
       }
+      var weight = this.weight;
+      if(weight === 0){
+        weight = 'データなし';
+      }
+      else{
+        weight += 'グラム';
+      }
       var tempKey = this.productName.split('　');
       var key = tempKey[0];
       var urlKeyword = this.productName.replace(/\s/g," ");
@@ -256,10 +278,10 @@ $(function() {
       + '</p><p class="cpu">CPU:'
       + this.cpu
       + '　<br>重さ:'
-      + this.weight
-      + 'グラム<br><span class="displaySize">ディスプレイの大きさ:'
+      + weight
+      + '<br><span class="displaySize">ディスプレイ:'
       + this.displaySize
-      + 'インチ</span></p></td></tr></table></a><div class="amazonP"><a href="http://www.amazon.co.jp/s/ref=nb_sb_noss_2?__mk_ja_JP=' + urlKeyword + '&url=search-alias%3Daps&field-keywords=' + urlKeyword +'&x=0&Ay=0" id="amazon"><img src="htmls/img/amazon_so.png" />アマゾンで検索する</a></div><div class="twitterP"><a href="#" id="twitterOpen" name="' + key + '" className="' + i + '"><img src="htmls/img/twitter_so.png" />ツイッターでの評判を見る</a></div><div id="twitterContent' + i + '" style="display: none"><p class="keywordP"><span class="keywordInfo' + i + '">読み込み中…</span></p><div id="twitter_search' + i + '"><div class="attweets"></div></div></div>';
+      + 'インチ</span></p></td></tr></table></a><div class="amazonP"><a href="http://www.amazon.co.jp/s/ref=nb_sb_noss_2?__mk_ja_JP=' + urlKeyword + '&url=search-alias%3Daps&field-keywords=' + urlKeyword +'&x=0&Ay=0" id="amazon" target="new" rel=”external”><img src="htmls/img/amazon_so.png" />アマゾンで検索する</a></div><div class="twitterP"><a href="#" id="twitterOpen" name="' + key + '" className="' + i + '"><img src="htmls/img/twitter_so.png" />ツイッターでの評判を見る</a></div><div id="twitterContent' + i + '" style="display: none"><p class="keywordP"><span class="keywordInfo' + i + '">読み込み中…</span></p><div id="twitter_search' + i + '"><div class="attweets"></div></div><div class="moreReadButton"><a href="#" id="moreRead' + i + '">More...</a></div></div>';
       //str = str + message;
       $('<li>').html(message).appendTo('#result');
       html = "";
@@ -272,13 +294,14 @@ $(function() {
     var id2 = "#twitter_search"  + i;
     var keyInfo = ".keywordInfo" + i;
     var a = $(this).html();
+    var read = "#moreRead" + i;
     if(a == '<img src="htmls/img/twitter_so.png">ツイッターでの評判を見る'){
       $(this).html('<img src="htmls/img/twitter_so.png" />閉じる');
       $(id2 + ' div').html('');
       $(id2).ATTwitterSearch({
         q : key,
         view : 5
-      });
+      }, read);
       $(keyInfo).html(key + ' の検索結果');
     }
     else{
@@ -289,301 +312,25 @@ $(function() {
 });
 //検索処理おわり
 
-//新規投稿処理
+//TOPへ戻る処理
 $(function() {
-  var flag = 0;
-  var countMax = 600;
-  $("#body").bind('keydown keyup keypress change', function(){
-    var bodyLength = $(this).val().length;
-    //var countDown = (countMax) - (bodyLength);
-    $(".count").html(bodyLength);
-
-    if(countMax < bodyLength){
-      $(".count").css({color: 'red', fontWeight: 'bold'});
-    }
-    else{
-      $(".count").css({color: '#000', fontWeight: 'normal'});
+  var topBtn = $('#backToTop');
+  topBtn.hide();
+  $(window).scroll(function () {
+    if ($(this).scrollTop() > 500) {
+      topBtn.fadeIn();
+    } else {
+      topBtn.fadeOut();
     }
   });
-  /*
-  $(document).delegate("#toukou", "pagebeforeshow", function(){
-    $(".count").html(countMax);
+  topBtn.click(function () {
+    $('body,html').animate({
+      scrollTop: 0
+    }, 500);
+    return false;
   });
-  */
-
-  //投稿ボタンクリック時
-  $("#postButton").click(function() {
-    if($("#title").val() !== "" && $("#body").val() !== ""){
-      if($("#title").val().length > 20){
-        global.message("タイトルは20文字までです");
-      }
-      else if($("#body").val().length > 600){
-        global.message("本文は600文字までです");
-      }
-      else if(flag === 0){
-        flag++;
-        setTimeout(function(){
-          flag = 0;
-        },5000);
-        url = "http://em-home.appspot.com/postComment";
-        req = {
-          "displayName":"",
-          "name":"",
-          "ua":navigator.userAgent,
-          "title":$("#title").val(),
-          "body":$("#body").val(),
-          "category":$("#select").val(),
-          "callback":"?"
-        };
-        global.loading(true);
-        $.post(url, req, callback);
-      }
-    }
-    else{
-      global.message("未入力の項目があります");
-    }
-  });
-  var callback = function(json){
-    global.loading(false);
-    if(json == "0"){
-      global.message("投稿に失敗しました\nやり直してください");
-      flag = 0;
-    }else{
-      document.getElementById("title").value ='';
-      document.getElementById("body").value ='';
-      flag = 0;
-      global.tempCategory = $("#select").val();
-      $.mobile.changePage("#list", "none", false, false);
-      //location.reload(true);
-      global.message("投稿が完了しました");
-    }
-  };
 });
-//新規投稿処理おわり
 
-//list処理
-$(function() {
-  var resJson;
-  var bookmarkClick = 0;
-  var bookmarkCount;
-  var lim, off, cat;
-  $(document).delegate("#list", "pagebeforeshow", function(){
-    $("#catListView").html('<center><h4 class="listLoading">読み込み中…</h4></center>');//画像入れるならこれを追加 <img class="ajaxLoading" src="htmls/img/ajax-loader.gif"/ >
-    if($('#listPostButton').size()){
-      document.getElementById('listPostButton').style.display = "block";
-    }
-    lim = 10;
-    off = 0;
-    cat = global.tempCategory;
-    if(cat !== 'ranking'){
-      loadCategoryList(cat, lim, off);
-    }
-    else{
-      loadRankingList(20, 0);
-      if($('#listPostButton').size()){
-        document.getElementById('listPostButton').style.display = "none";
-      }
-    }
-    switch(cat){
-      case "ochi":
-        $("#listHeaderLabel").html('オチのある話');
-        break;
-      case "fukaii":
-        $("#listHeaderLabel").html('じーんとくる話');
-        break;
-      case "renai":
-        $("#listHeaderLabel").html('惚れた腫れた物語');
-        break;
-      case "jiman":
-        $("#listHeaderLabel").html('ここだけの自慢話');
-        break;
-      case "kuchikomi":
-        $("#listHeaderLabel").html('口コミ情報');
-        break;
-      case "2013":
-        $("#listHeaderLabel").html('2013年の抱負！');
-        break;
-      case "ranking":
-        $("#listHeaderLabel").html('ランキング');
-        break;
-    }
-  });
-  $("#moreRead").live("click", function(){
-    loadCategoryList(cat, lim, off);
-  });
-
-  function loadCategoryList(cat, lim, off){
-    url = "http://em-home.appspot.com/getCategoryCommentList";
-    req = {
-      "name":"test",
-      "category":cat,
-      "limit":lim,
-      "offset":off,
-      "callback":"?"
-    };
-    global.loading(true);
-    $.post(url, req, callback,"json");
-  }
-  function loadRankingList(lim, off){
-    url = "http://em-home.appspot.com/getViewRanking";
-    req = {
-      "limit":lim,
-      "offset":off,
-      "callback":"?"
-    };
-    global.loading(true);
-    $.post(url, req, callback,"json");
-  }
-  var callback = function(json){
-     $("#catListView").html('');
-    global.loading(false);
-    off = off + json.length;
-    resJson = json;
-    if(json === 0){
-      if(off === 0){
-        $('#catListView').html('<p class="noData">まだコメントはありません</p>');
-        return;
-      }
-      else{return;}
-    }
-    var icount = json.length;
-    if(icount < 9 || icount === null || global.tempCategory === 'ranking'){
-      document.getElementById('moreRead').style.display = "none";
-    }else{
-      document.getElementById('moreRead').style.display = "block";
-    }
-    $.each(json, function(i, item) {
-      bodyText = this.body.replace(/\r\n/g,"\n");
-      bodyText = bodyText.replace(/\r/g,"\n");
-      bodyText = bodyText.replace(/\n/g,"");
-      if(bodyText.length > 40){
-        bodyText = bodyText.substr(0,40) + "...<span class='moreBody'>　続きあり</span>";
-      }
-      var rank = '';
-      var cat = '';
-      var spanEnd = '';
-      var titleClass = 'comTitle';
-      var n = i + 1;
-      if(global.tempCategory === 'ranking'){
-        cat = '<img src="htmls/img/' + this.category +'.png" /><span>';
-        spanEnd = '</span>';
-        titleClass = 'comTitleRank';
-        if(i < 3){
-          rank = '<td><div id="rankingImg"><img src="htmls/img/crown' + n +'.png" /></div><div id="rankingCrownNum">' + n +'</div></td>';
-        }
-        else{
-          rank = '<td><div id="rankingRound">　</div><div id="rankingNum">' + n +'</div></td>';
-        }
-      }
-      /*
-      bodyText = bodyText.replace(/。/g,"。\n");
-      bodyText = bodyText.replace(/\n\n/g,"\n");
-      caption = bodyText.split("\n");
-      if(caption.length < 3){
-        bodyText = bodyText.replace(/\n/g,"<br>");
-      }
-      else{
-        bodyText = caption[0] + "<br>" + caption[1] + "<span class='moreBody'>　...続きあり</span>";
-      }
-      */
-      message = '<a href="#" data-transition="pop" data-rel="popup"><table class="comInfo"><tr>' + rank + '<td><p class="' + titleClass + '">'
-      + cat
-      + this.title
-      + spanEnd
-      + '<p class="comBody">'
-      + bodyText
-      + '</p><p class="comData">アクセス数:'
-      + this.views
-      + '　★'
-      + this.bookmark
-      + '<span class="comTime">日時:'
-      + formatDate(this.date.isoformat)
-      + '</span></p></td></tr></table></a> ';
-      $('<li>').html(message).appendTo('#catListView');
-      message = "";
-    });
-  };
-  $(".comInfo").live("click", function(){
-    var index = $(".comInfo").index(this);
-    var json = resJson[index];
-    var bodyText = json.body.replace(/\r\n/g,"\n");
-    bodyText = bodyText.replace(/\r/g,"\n");
-    bodyText = bodyText.replace(/\n/g,"<br>");
-    viewCountup(json.com_ID);
-    json.views++;
-    //GoogleAnalitics
-    var u = "#comInfo&" + json.title;
-    u ? _gaq.push(['_trackPageview', u]) : _gaq.push(['_trackPageview']);
-    //$("#commentHeaderLabel").html('');
-    $("#commentName").html('');
-    $("#commentDate").html('');
-    $("#commentTitle").html('');
-    $("#commentBodyText").html('');
-    $("#commentViews").html('');
-    $("#commentBookmarks").html('');
-    //$("#commentHeaderLabel").html(json.title);
-    $("#commentName").html("@" + json.name);
-    $("#commentDate").html(formatDate(json.date.isoformat));
-    $("#commentTitle").html(json.title);
-    $("#commentBodyText").html(bodyText);
-    $("#commentViews").html("アクセス数: " + json.views);
-    $("#commentBookmarks").html("いいね: " + json.bookmark);
-    $("#commentPage").popup("open");
-    $("#likeButton").attr("name",json.com_ID);
-    bookmarkCount = json.bookmark;
-  });
-  $("#closeButton").live("click", function(){
-    $( "#commentPage" ).popup( "close" );
-  });
-  $("#likeButton").live("click", function(){
-    var name;
-    if(global.userName){
-      name = global.userName;
-    }
-    else{
-      name = navigator.userAgent + ' /' + global.ipAdress;
-    }
-    if(bookmarkClick === 0){
-      bookmarkClick++;
-      bookmarkCountup(name,this.name);
-    }
-    else{
-      return;
-    }
-  });
-  function viewCountup(state){
-    url = "http://em-home.appspot.com/addView";
-    req = {
-      "com_ID":state,
-      "callback":"?"
-    };
-    $.post(url, req, callbackView);
-  }
-  var callbackView = function(){
-    //カウント完了のコールバックは特にしない
-  };
-  function bookmarkCountup(name,state){
-    url = "http://em-home.appspot.com/addBookmark";
-    req = {
-      "name":name,
-      "com_ID":state,
-      "callback":"?"
-    };
-    global.loading(true);
-    $.post(url, req, callbackBookmark);
-  }
-  var callbackBookmark = function(res){
-    global.loading(false);
-    if(res == "SUCCEEDED"){
-      $("#commentBookmarks").html("いいね: " + (bookmarkCount+1));
-    }
-    else{
-      global.message('「いいね！」は、ひとつの記事に対して一度だけです');
-    }
-    bookmarkClick = 0;
-  };
-});
-//list処理終わり
 
 //時間変換のファンクション
 function utc2jst(utc) {

@@ -6,14 +6,14 @@ Copyright : (C)atokala
 Author : Masahiro Abe
 --------------------------------------------*/
 (function($){
-	$.fn.ATTwitterSearch = function(config) {
+	$.fn.ATTwitterSearch = function(config, moreReadText) {
 
 		var defaults = {
 			tweets : '.attweets',
 			loading : '.atloading',
 			view : 5,
 			page : 1
-		}
+		};
 
 		var options = $.extend(defaults, config);
 		var LOADFLAG = false;		//tweetを読み込み中の時はtrue
@@ -21,7 +21,7 @@ Author : Masahiro Abe
 		//Stringクラスに全置換え追加
 		String.prototype.replaceAll = function (org, dest) {
 			return this.split(org).join(dest);
-		}
+		};
 
 		return this.each(function(){
 			var _self = $(this);
@@ -29,6 +29,7 @@ Author : Masahiro Abe
 			function getTwitter() {
 				var encode = urlEncode(options.q);
 				var url = 'http://search.twitter.com/search.json?q=' + encode + '&callback=?&rpp=' + options.view + '&page=' + options.page;
+				$(moreReadText).html('Reading...');
 				$.getJSON(url, function(json){twitterLoad(json.results)});
 			}
 
@@ -46,22 +47,23 @@ Author : Masahiro Abe
 
 			function twitterLoad(json) {
 				if (json) {
-					loadingView();
+					//loadingView();
 					setTimeout(function() {
+						$(moreReadText).html('More...');
 						var twitterContents = '';
 						if(json.length === 0){
 							twitterContents += '<div class="attweet"><p>結果が見つかりませんでした</p></div>';
+							$(moreReadText).css('display', 'none');
 						}
 						else{
 							for (var i = 0; i < json.length; i++) {
 								twitterContents += tweetHTML(json[i]);
 							}
 						}
-						
 						$(options.tweets, _self).append(twitterContents);
-						loadingHidden();
+						//loadingHidden();
 						options.page ++;
-					}, 500);
+					}, 300);
 				}
 			}
 
@@ -129,6 +131,7 @@ Author : Masahiro Abe
 			}
 
 			getTwitter();
+
 			$(this).scroll(function(){
 				var scrollHeight = $(this)[0].scrollHeight;
 				var scrollPosition = $(this).height() + $(this).scrollTop();
@@ -141,6 +144,11 @@ Author : Masahiro Abe
 					}
 				}, 100);
 			});
+
+			$(moreReadText).bind("click",function(){
+				getTwitter();
+			});
+
 		});
 	};
 })(jQuery);

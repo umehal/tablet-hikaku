@@ -16,6 +16,7 @@
     <!-- TOPページ -->
     <div data-role="page" id="home">
       <div class="topTitle" data-role="header">
+        <a href="#infomationPage" class="infomation" data-theme="c" data-icon="info" data-role="button" data-iconpos="notext" data-transition="fade" data-rel="popup">infomation</a>
         <h1 class="topTitleLabel">タブレット比較</h1>
       </div>
       <div data-role="content" class="homeContent">
@@ -63,9 +64,9 @@
               </option>
             </select>
           </div>
-          <div data-role="fieldcontain" class="textField">
+          <div data-role="fieldcontain" class="weight">
             <label class="weightLabel" for="weightMin">■重さ</label>
-            <input type="text" name="weightMin" id="weightMin" class="custom" data-mini="true" data-inline="true" />g 〜 <input type="text" name="weightMax" id="weightMax" class="custom" data-mini="true" data-inline="true" />g
+            <input type="number" name="weightMin" id="weightMin" class="custom" data-mini="true" data-inline="true" step="10" min="0"/>g 〜 <input type="number" name="weightMax" id="weightMax" class="custom" data-mini="true" data-inline="true" step="10" min="0"/>g
           </div>
           <div data-role="fieldcontain">
             <label class="cpuLabel" for="cpuSelect1">■CPU（クロック）</label>
@@ -98,7 +99,7 @@
             <label for="4core">4コア</label>
             </fieldset>
           </div>
-          <a href="#" id="searchButton" onClick="this.disabled = true;" data-theme="e" data-role="button" class="btnStyle2" data-inline="true" data-mini="true">検索する</a>
+          <a href="#" id="searchButton" onClick="this.disabled = true;" data-theme="e" data-role="button" class="btnStyle2" data-inline="true" data-icon="search" data-mini="true">検索する</a>
           </form>
         </div>
         <div class="result">
@@ -116,7 +117,20 @@
         (C) 2012 copyright.<br><br>
         <a href="http://apidoc.coneco.net/" target="_blank" title="webservices by coneco.net Web Services"><img src="http://img.coneco.net/images/webservices_by_coneco2.gif" width="180" height="16" alt="webservices by coneco.net Web Services"></a>
       </div>
+
+      <div data-role="popup" data-transition="fade" id="infomationPage">
+        <div data-role="content" class="infomationArea">
+          <span class="description">
+          タブレット端末、１台あると本当に便利ですね。<br>
+          近ごろは、様々な種類のタブレットが登場していますが、どれを買えばよいか迷っていませんか？<br><br>
+          そんなあなたにぴったりのタブレットを検索できるサイトです。<br><br>
+          条件を選択して「検索する」ボタンを押してください。（空欄があっても大丈夫です）<br>
+          AmazonやTwitterでの評判を参考に、最高の一台を見つけてください！
+          </span>
+        </div>
+      </div>
     </div>
     <!-- TOPページおわり -->
+    <div id="backToTop"><a href="#">PAGE TOP</a></div>
   </body>
 </html>
