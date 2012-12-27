@@ -95,6 +95,10 @@ body {
   -webkit-touch-callout: none;
 }
 
+strong {
+	font-weight: bold;
+}
+
 /*footer*/
 .aboutService {
   text-align: right;
@@ -276,6 +280,10 @@ body, #home {
   white-space: nowrap;
 }
 
+	.weight input.ui-input-text, .weight textarea.ui-input-text {
+	  display: inline;
+	}
+
 #weightMin, #weightMax {
   margin: 0;
   width: 60px;
@@ -432,15 +440,6 @@ body, #home {
   -webkit-tap-highlight-color: rgba(82, 184, 207, 0.4);
 }
 
-#infomationPage {
-  opacity: 0.95;
-  color: black;
-  font-weight: lighter;
-  font-family: Hiragino Maru Gothic Pro, Meiryo, serif;
-  text-decoration: none;
-  text-shadow: none;
-  background: #FFF;
-}
 
 #backToTop {
   padding: 15px;
@@ -457,4 +456,27 @@ body, #home {
   font-family : Helvetica, Arial, sans-serif;
   font-size: 70%;
   font-weight: bold;
+}
+
+
+/* ====================================
+  infomationPage
+======================================= */
+
+#infomationPage {
+  opacity: 0.95;
+  color: black;
+  font-weight: lighter;
+  font-family: Hiragino Maru Gothic Pro, Helvetica, Arial, Meiryo, sans-serif;
+  text-decoration: none;
+  text-shadow: none;
+  background: #FFF;
+}
+
+.infoImg {
+  width: 70%;
+  max-width: 200px;
+  margin: 15px auto;
+/*  border: 1px solid #DDD; */
+  display: block;
 }
