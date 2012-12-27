@@ -145,7 +145,7 @@ Author : Masahiro Abe
 				}, 100);
 			});
 
-			$(moreReadText).bind("click",function(){
+			$(moreReadText).live("click",function(){
 				getTwitter();
 			});
 

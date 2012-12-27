@@ -74,6 +74,21 @@ global.message = function(message,time){
   },time);
 };
 global.url = 'http://tablet-hikaku.appspot.com/';
+global.count = [];
+
+//PC＆スマートフォンの判別
+var ua = navigator.userAgent.toUpperCase();
+if(ua.indexOf('IPHONE') != -1 || (ua.indexOf('ANDROID') != -1 && ua.indexOf('MOBILE') != -1)){
+  global.ua = 'sp';
+}
+else{
+  global.ua = 'pc';
+}
+
+
+
+
+
 
 
 /*
@@ -270,7 +285,14 @@ $(function() {
       var urlKeyword = this.productName.replace(/\s/g," ");
       urlKeyword = urlKeyword.replace(/\(\D+\)/g,"");
       urlKeyword = urlKeyword.replace(/[\(\)\-\_\*]/g,"");
-      urlKeyword = encodeURIComponent(urlKeyword);
+      //urlKeyword = encodeURI(urlKeyword);
+      var amazonUrl;
+      if(global.ua === 'pc'){
+        amazonUrl = 'http://www.amazon.co.jp/s/ref=nb_sb_noss_2?__mk_ja_JP=カタカナ&url=search-alias%3Daps&field-keywords=' + urlKeyword; + '&x=0&Ay=0';
+      }
+      else{
+        amazonUrl = 'http://www.amazon.co.jp/gp/aw/s/ref=is_s_?__mk_ja_JP=カタカナ&k=' + urlKeyword + '&i=aps';
+      }
       message = '<a href="#" class="resultLink" data-transition="pop" data-rel="popup" target="new"><table class="resultInfo"><tr><td><div id="resultImg"><img src="' + img +'" /></div></td><td><p class="productName"><span>'
       + this.productName
       + '</span><p class="os">OS:'
@@ -281,7 +303,7 @@ $(function() {
       + weight
       + '<br><span class="displaySize">ディスプレイ:'
       + this.displaySize
-      + 'インチ</span></p></td></tr></table></a><div class="amazonP"><a href="http://www.amazon.co.jp/s/ref=nb_sb_noss_2?__mk_ja_JP=' + urlKeyword + '&url=search-alias%3Daps&field-keywords=' + urlKeyword +'&x=0&Ay=0" id="amazon" target="new" rel=”external”><img src="htmls/img/amazon_so.png" />アマゾンで検索する</a></div><div class="twitterP"><a href="#" id="twitterOpen" name="' + key + '" className="' + i + '"><img src="htmls/img/twitter_so.png" />ツイッターでの評判を見る</a></div><div id="twitterContent' + i + '" style="display: none"><p class="keywordP"><span class="keywordInfo' + i + '">読み込み中…</span></p><div id="twitter_search' + i + '"><div class="attweets"></div></div><div class="moreReadButton"><a href="#" id="moreRead' + i + '">More...</a></div></div>';
+      + 'インチ</span></p></td></tr></table></a><div class="amazonP"><a href="'+ amazonUrl +'" id="amazon" target="new" rel=”external”><img src="htmls/img/amazon_so.png" />アマゾンで検索する</a></div><div class="twitterP"><a href="#" id="twitterOpen" name="' + key + '" className="' + i + '"><img src="htmls/img/twitter_so.png" />ツイッターでの評判を見る</a></div><div id="twitterContent' + i + '" style="display: none"><p class="keywordP"><span class="keywordInfo' + i + '">読み込み中…</span></p><div id="twitter_search' + i + '"><div class="attweets"></div></div><div class="moreReadButton"><a href="#" id="moreRead' + i + '">More...</a></div></div>';
       //str = str + message;
       $('<li>').html(message).appendTo('#result');
       html = "";
@@ -296,12 +318,21 @@ $(function() {
     var a = $(this).html();
     var read = "#moreRead" + i;
     if(a == '<img src="htmls/img/twitter_so.png">ツイッターでの評判を見る'){
+      /*
+      var moreCss = $(read).css('display');
+      if(moreCss === 'none'){
+        $(read).css('display', 'block');
+      }
+      */
       $(this).html('<img src="htmls/img/twitter_so.png" />閉じる');
-      $(id2 + ' div').html('');
-      $(id2).ATTwitterSearch({
-        q : key,
-        view : 5
-      }, read);
+      if(!global.count[i]){
+        global.count[i] = true;
+        $(id2 + ' div').html('');
+        $(id2).ATTwitterSearch({
+          q : key,
+          view : 5
+        }, read);
+      }
       $(keyInfo).html(key + ' の検索結果');
     }
     else{
@@ -331,6 +362,18 @@ $(function() {
   });
 });
 
+//URLエンコードのファンクション
+function urlEncode(data) {
+  data = data.replaceAll('!', escape('!'));
+  data = data.replaceAll('(', escape('('));
+  data = data.replaceAll(')', escape(')'));
+  data = data.replaceAll('_', escape('_'));
+  data = data.replaceAll('*', escape('*'));
+
+  //!'()*-._~は変換されない
+  var encode = encodeURIComponent(data);
+  return encode;
+}
 
 //時間変換のファンクション
 function utc2jst(utc) {
