@@ -166,6 +166,9 @@ $(function() {
     };
     //alert(JSON.stringify(param));
     searchRequest(param);
+    var query = JSON.stringify(param);
+    var u = "#seach&" + query;
+    u ? _gaq.push(['_trackPageview', u]) : _gaq.push(['_trackPageview']);
   });
 
   function arrayToText(Array){
@@ -278,9 +281,23 @@ $(function() {
       $('body,html').animate({
         scrollTop: 0
       }, 500);
+      var u = '#backToTop';
+      u ? _gaq.push(['_trackPageview', u]) : _gaq.push(['_trackPageview']);
       return false;
     });
   }
+});
+
+//infomationを表示した際の処理
+$(function() {
+  $(".infomation").live("click", function() {
+    var u = '#infomation';
+    u ? _gaq.push(['_trackPageview', u]) : _gaq.push(['_trackPageview']);
+  });
+  $(".infomationButton").live("click", function() {
+    var u = '#infomation';
+    u ? _gaq.push(['_trackPageview', u]) : _gaq.push(['_trackPageview']);
+  });
 });
 
 $.widget('mobile.tabbar', $.mobile.navbar, {
