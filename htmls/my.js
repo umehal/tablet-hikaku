@@ -3,32 +3,6 @@ jQuery.postJSON = function(url, data, callback) {
 　　jQuery.post(url, data, callback, "json");
 };
 
-/*
-//GoogleAnalytics設定
-//set
-var _gaq = _gaq || [];
-_gaq.push(['_setAccount', 'UA-28887867-3']);//自分のトラッキング IDを入れる
-
-//async
-(function () {
-  var ga = document.createElement('script'); ga.async = true;
-  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-})();
-
-//data-role='page'が表示されたらトラッキングする
-$('[data-role="page"]').live('pageshow', function(){
-  var u = location.hash.replace('#', '');
-  if(u !== 'list'){//listは重複するので除く
-    u ? _gaq.push(['_trackPageview', u]) : _gaq.push(['_trackPageview']);
-  }
-  else{
-    return;
-  }
-});
-//GoogleAnalitics設定おわり
-*/
-
 //JQM設定
 $(document).bind("mobileinit", function(){
   $.mobile.page.prototype.options.backBtnText = "戻る";
@@ -84,55 +58,6 @@ if(ua.indexOf('IPHONE') != -1 || (ua.indexOf('ANDROID') != -1 && ua.indexOf('MOB
 else{
   global.ua = 'pc';
 }
-
-
-
-
-
-
-
-/*
-//セッションチェック
-$(function() {
-  url = "http://em-home.appspot.com/checkSession";
-  req = {
-    "callback":"?"
-  };
-  $.post(url, req, checkCallback);
-});
-var checkCallback = function(json){
-  if(json == "0"){
-    $(".userInfo").html('未ログインです');
-  }
-  else{
-    global.userName = json;
-    $(".userInfo").html(json + 'としてログイン中です');
-  }
-  var url = location.hash;
-  if(url.substr(0,5) === "#list"){
-    location.href = "#home";
-    location.reload(true);
-  }
-};
-
-//IPアドレスチェック
-$(function() {
-  url = "http://em-home.appspot.com/getIpAdress";
-  req = {
-    "callback":"?"
-  };
-  if(!ip){
-    $.post(url, req, ipCallback);
-  }
-  else{
-    return;
-  }
-});
-var ipCallback = function(json){
-  global.ipAdress = json;
-  ip = true;
-};
-*/
 
 //検索画面の処理
 $(function() {
@@ -269,6 +194,7 @@ $(function() {
       return;
     }
     $.each(json, function(i, item) {
+      global.count[i] = false;
       var img = this.img;
       if(this.img === '' || this.img === 'http://www.coneco.net/images/noimg.gif'){
         img = 'htmls/img/noimage.jpg';
@@ -303,8 +229,7 @@ $(function() {
       + weight
       + '<br><span class="displaySize">ディスプレイ:'
       + this.displaySize
-      + 'インチ</span></p></td></tr></table></a><div class="amazonP"><a href="'+ amazonUrl +'" id="amazon" target="new" rel=”external”><img src="htmls/img/amazon_so.png" />アマゾンで検索する</a></div><div class="twitterP"><a href="#" id="twitterOpen" name="' + key + '" className="' + i + '"><img src="htmls/img/twitter_so.png" />ツイッターでの評判を見る</a></div><div id="twitterContent' + i + '" style="display: none"><p class="keywordP"><span class="keywordInfo' + i + '">読み込み中…</span></p><div id="twitter_search' + i + '"><div class="attweets"></div></div><div class="moreReadButton"><a href="#" id="moreRead' + i + '">More...</a></div></div>';
-      //str = str + message;
+      + 'インチ</span></p></td></tr></table></a><div class="sosialButton"><div class="amazonP"><a href="'+ amazonUrl +'" id="amazon" target="new" rel=”external”><img src="htmls/img/amazon_so.png" />アマゾンで検索する</a></div><div class="twitterP"><a href="#" onclick="return false;" id="twitterOpen" name="' + key + '" className="' + i + '"><img src="htmls/img/twitter_so.png" />ツイッターでの評判を見る</a></div></div><div id="twitterContent' + i + '" style="display: none"><p class="keywordP"><span class="keywordInfo' + i + '">読み込み中…</span></p><div id="twitter_search' + i + '"><div class="attweets"></div></div><div class="moreReadButton"><a href="#" id="moreRead' + i + '">More...</a></div></div>';
       $('<li>').html(message).appendTo('#result');
       html = "";
     });
@@ -318,16 +243,10 @@ $(function() {
     var a = $(this).html();
     var read = "#moreRead" + i;
     if(a == '<img src="htmls/img/twitter_so.png">ツイッターでの評判を見る'){
-      /*
-      var moreCss = $(read).css('display');
-      if(moreCss === 'none'){
-        $(read).css('display', 'block');
-      }
-      */
       $(this).html('<img src="htmls/img/twitter_so.png" />閉じる');
       if(!global.count[i]){
         global.count[i] = true;
-        $(id2 + ' div').html('');
+        $(id2 + ' ul').html('');
         $(id2).ATTwitterSearch({
           q : key,
           view : 5
@@ -347,77 +266,22 @@ $(function() {
 $(function() {
   var topBtn = $('#backToTop');
   topBtn.hide();
-  $(window).scroll(function () {
-    if ($(this).scrollTop() > 500) {
-      topBtn.fadeIn();
-    } else {
-      topBtn.fadeOut();
-    }
-  });
-  topBtn.click(function () {
-    $('body,html').animate({
-      scrollTop: 0
-    }, 500);
-    return false;
-  });
-});
-
-//URLエンコードのファンクション
-function urlEncode(data) {
-  data = data.replaceAll('!', escape('!'));
-  data = data.replaceAll('(', escape('('));
-  data = data.replaceAll(')', escape(')'));
-  data = data.replaceAll('_', escape('_'));
-  data = data.replaceAll('*', escape('*'));
-
-  //!'()*-._~は変換されない
-  var encode = encodeURIComponent(data);
-  return encode;
-}
-
-//時間変換のファンクション
-function utc2jst(utc) {
-  return new Date(utc.getTime() + 9*60*60*1000);
-}
-function W3CDTFtoDate(w3cdtf) {
-  var m = w3cdtf.match(/(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/);
-  var date = new Date(m[1], m[2] - 1, m[3], m[4], m[5], m[6]);
-  date.setTime(date.getTime() + 9 * 60 * 60 * 1000);
-  return date;
-}
-function formatDate(date){
-  var userAgent = window.navigator.userAgent.toLowerCase();
-  var appVersion = window.navigator.appVersion.toLowerCase();
-  jst = date;
-  date = W3CDTFtoDate(jst);
-  if (userAgent.indexOf("firefox") > -1) {
-    jst = utc2jst(date);
+  if(global.ua === 'pc'){
+    $(window).scroll(function () {
+      if ($(this).scrollTop() > 500) {
+        topBtn.fadeIn();
+      } else {
+        topBtn.fadeOut();
+      }
+    });
+    topBtn.click(function () {
+      $('body,html').animate({
+        scrollTop: 0
+      }, 500);
+      return false;
+    });
   }
-  var create = date.toString().replace(/:/g, " ");
-  var created_at = create.split(" ");
-  
-  if(created_at[1] == "Jan") created_at[1] = "01";
-  if(created_at[1] == "Feb") created_at[1] = "02";
-  if(created_at[1] == "Mar") created_at[1] = "03";
-  if(created_at[1] == "Apr") created_at[1] = "04";
-  if(created_at[1] == "May") created_at[1] = "05";
-  if(created_at[1] == "Jun") created_at[1] = "06";
-  if(created_at[1] == "Jul") created_at[1] = "07";
-  if(created_at[1] == "Aug") created_at[1] = "08";
-  if(created_at[1] == "Sep") created_at[1] = "09";
-  if(created_at[1] == "Oct") created_at[1] = "10";
-  if(created_at[1] == "Nov") created_at[1] = "11";
-  if(created_at[1] == "Dec") created_at[1] = "12";
-  
-  var post_date  = String(created_at[3]) + "/"
-           + String(created_at[1]) + "/"
-           + String(created_at[2]) + " "
-           + String(created_at[4]) + ":"
-           + String(created_at[5]);
-
-  return String(post_date);
-}
-//時間変換のファンクションおわり
+});
 
 $.widget('mobile.tabbar', $.mobile.navbar, {
   _create: function() {

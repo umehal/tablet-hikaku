@@ -167,9 +167,21 @@ body, #home {
   background: #f0f0f0;
 }
 
-.topTitle a {
-  padding: 2px;
-  margin: 5px 0 0 3px;
+.infoArea {
+  text-align: left;
+}
+
+.infomationButton {
+  margin: -5px 0 0 2%;
+}
+
+.infomation {
+  margin: 3px 0 0 0;
+  text-decoration: none;
+  font-size: 100%;
+  font-weight: lighter;
+  font-family: Helvetica, Arial, Meiryo, sans-serif;
+  text-shadow: -1px 1px 0 rgba(255, 255, 255, 1);
 }
 
 #explain {
@@ -221,11 +233,8 @@ body, #home {
   border-top: none;
   border-left: none;
   border-right: none;
-  /* border-radius: 8px; */
-  /* margin-top: 10px; */
   background: #FFF;
   overflow: visible;
-  /* -webkit-tap-highlight-color: rgba(82, 184, 207, 0.4);　*/
 }
 
 .resultInfo {
@@ -289,28 +298,26 @@ body, #home {
   width: 60px;
 }
 
-/*
-.weightSpan {
-  width: 100%;
-}
-*/
-
 .twitter .twitter-timeline {
   text-align: center;
   margin: 10px auto;
   width: 90%;
 }
 
-.amazonP {
+.sosialButton {
   text-align: center;
-  margin: -10px 0 5px 0;
-  min-width: 200px;
+}
+
+.amazonP {
+  text-align: left;
+  margin: -10px auto 5px auto;
+  width: 185px;
 }
 
 #amazon {
   color: blue;
   font-size: 70%;
-  margin: 0 0 0 5px;
+  margin: 0;
   padding: 6px 3px;
   border-radius: 2px;
   background: #eee;
@@ -318,29 +325,34 @@ body, #home {
 }
 
 #amazon img{
-  margin: 0 5px 0 0;
+  margin: 0 5px -4px 0;
   width: 30px;
   height: 30px;
 }
 
 .twitterP {
-  text-align: center;
-  margin: 0px 0 10px 0;
-  min-width: 200px;
+  text-align: left;
+  margin: 0px auto 10px auto;
+  width: 185px;
 }
 
 #twitterOpen {
   color: blue;
   font-size: 70%;
-  margin: 0 0 0 5px;
+  text-decoration:underline;
+  margin: 0;
   padding: 6px 3px;
   border-radius: 2px;
   background: #eee;
   -webkit-tap-highlight-color: rgba(82, 184, 207, 0.4)
 }
 
+#twitterOpen:hover {
+  cursor: pointer;
+}
+
 #twitterOpen img{
-  margin: 0 5px 0 0;
+  margin: 0 5px -4px 0;
   width: 30px;
   height: 30px;
 }
@@ -465,7 +477,7 @@ body, #home {
 
 #infomationPage {
   opacity: 0.95;
-  color: black;
+  color: #000;
   font-weight: lighter;
   font-family: Hiragino Maru Gothic Pro, Helvetica, Arial, Meiryo, sans-serif;
   text-decoration: none;
@@ -479,4 +491,12 @@ body, #home {
   margin: 15px auto;
 /*  border: 1px solid #DDD; */
   display: block;
+}
+
+.infoClose {
+  text-align: center;
+}
+
+.closeButton {
+  margin: 0 auto;
 }

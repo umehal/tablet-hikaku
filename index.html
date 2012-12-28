@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="htmls/my.css">
     <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+    <script src="htmls/jquery.carouFredSel-6.1.0-packed.js"></script>
+    <script src="htmls/jquery.ba-throttle-debounce.min.js"></script>
+    <script src="htmls/jquery.mousewheel.min.js"></script>
+    <script src="htmls/jquery.touchSwipe.min.js"></script>
     <script type="text/javascript" src="htmls/jquery.twitter.search.js"></script>
     <script src="htmls/my.js"></script>
   </head>
@@ -16,10 +20,13 @@
     <!-- TOPページ -->
     <div data-role="page" id="home">
       <div class="topTitle" data-role="header">
-        <a href="#infomationPage" class="infomation" data-theme="c" data-icon="info" data-role="button" data-iconpos="notext" data-transition="fade" data-rel="popup">infomation</a>
         <h1 class="topTitleLabel">タブレット比較</h1>
       </div>
       <div data-role="content" class="homeContent">
+        <div class="infoArea">
+          <a href="#infomationPage" class="infomationButton" data-theme="d" data-icon="info" data-inline="true" data-role="button" data-iconpos="notext" data-transition="fade" data-rel="popup">タブレット比較とは？</a>
+          <a href="#infomationPage" class="infomation" data-transition="fade" data-rel="popup">タブレット比較とは？</a>
+        </div>
         <div class="searchArea">
           <form action="#" method="post"enctype="multipart/form-data" name="search">
           <div data-role="fieldcontain">
@@ -69,7 +76,7 @@
             <input type="number" name="weightMin" id="weightMin" class="custom" data-mini="true" data-inline="true" step="10" min="0"/>g ～ <input type="number" name="weightMax" id="weightMax" class="custom" data-mini="true" data-inline="true" step="10" min="0"/>g
           </div>
           <div data-role="fieldcontain">
-            <label class="cpuLabel" for="cpuSelect1">■CPU（クロック）</label>
+            <label class="cpuLabel" for="cpuSelect1">■CPU(クロック)</label>
             <select id="cpuSelect1" data-theme="c" data-native-menu="false"  data-mini="true">
               <option value="none">
                 選択してください
@@ -105,12 +112,6 @@
         <div class="result">
           <ul id="result" data-role="listview" data-divider-theme="b" data-inset="false">
           </ul>
-          <!--
-          <div class="twitter">
-            <a class="twitter-timeline" href="https://twitter.com/search?q=%23%E3%83%8D%E3%82%AF%E3%82%B5%E3%82%B97" data-widget-id="279539802955714560">Tweets about "#ネクサス7"</a>
-            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-          </div>
-        -->
         </div>
       </div>
       <div class="copyright">
@@ -129,6 +130,9 @@
           AmazonやTwitterでの評判を参考に、最高の一台を見つけてください！
           <img class="infoImg" src="htmls/img/infoImg_02.png" />
           </span>
+          <div class="infoClose">
+            <a href="#" data-rel="back" data-role="button" data-theme="c" data-icon="delete" class="closeButton" data-mini="true" data-inline="true">閉じる</a>
+          </div>
         </div>
       </div>
     </div>
