@@ -265,6 +265,17 @@ $(function() {
 });
 //検索処理おわり
 
+//リセットボタンの処理
+$(function() {
+  $("#resetButton").live("click", function() {
+    $("input[type='number']").attr("value", "");
+    $("input[type='checkbox']").attr("checked", false).checkboxradio("refresh");
+    $("#cpuSelect1").val("none").selectmenu('refresh');
+    $("#resolutionSelect").val("none").selectmenu('refresh');
+  });
+});
+//リセットボタンの処理
+
 //TOPへ戻る処理
 $(function() {
   var topBtn = $('#backToTop');

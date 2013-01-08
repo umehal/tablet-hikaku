@@ -40,7 +40,7 @@
           <a href="#infomationPage" class="infomation" data-transition="fade" data-rel="popup">タブレット比較とは？</a>
         </div>
         <div class="searchArea">
-          <form action="#" method="post"enctype="multipart/form-data" name="search">
+          <form id="formData" action="#" method="post"enctype="multipart/form-data" name="search">
           <div data-role="fieldcontain">
             <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
             <legend>■OS</legend>
@@ -119,6 +119,7 @@
             </fieldset>
           </div>
           <a href="#" id="searchButton" onClick="this.disabled = true;" data-theme="e" data-role="button" class="btnStyle2" data-inline="true" data-icon="search" data-mini="true">検索する</a>
+          <a href="#" id="resetButton" data-theme="c" data-role="button" class="btnStyle2" data-inline="true" data-icon="delete" data-mini="true">リセット</a>
           </form>
         </div>
         <div class="result">
