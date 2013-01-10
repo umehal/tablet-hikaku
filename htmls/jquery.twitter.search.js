@@ -12,7 +12,8 @@ Author : Masahiro Abe
       tweets : '.attweets',
       loading : '.atloading',
       view : 5,
-      page : 1
+      page : 1,
+      lang : 'ja'
     };
 
     var options = $.extend(defaults, config);
@@ -28,7 +29,7 @@ Author : Masahiro Abe
 
       function getTwitter() {
         var encode = urlEncode(options.q);
-        var url = 'http://search.twitter.com/search.json?q=' + encode + '&callback=?&rpp=' + options.view + '&page=' + options.page;
+        var url = 'http://search.twitter.com/search.json?q=' + encode + '&callback=?&rpp=' + options.view + '&page=' + options.page + '&lang=' + options.lang;
         $(moreReadText).html('Reading...');
         $.getJSON(url, function(json){twitterLoad(json.results)});
       }
@@ -62,30 +63,8 @@ Author : Masahiro Abe
             }
             twitterContents = '<div class="carContent">' + twitterContents + '</div>';
             $(options.tweets, _self).append(twitterContents);
-            //loadingHidden();
             options.page ++;
-            if(options.page > 1){
-              /*
-              $(".attweets").carouFredSel({
-                circular: false,
-                infinite: false,
-                responsive: true,
-                width: '100%',
-                height: '100%',
-                padding: [20, 20],
-                auto: false,
-                prev: '#prev',
-                next: '#next',
-                pagination: "#pager",
-                mousewheel: true,
-                swipe: {
-                  onMouse: true,
-                  onTouch: true,
-                  duration: 500
-                }
-              });
-              */
-            }
+            $.waypoints('refresh');
           }, 300);
         }
       }

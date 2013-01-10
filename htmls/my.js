@@ -63,6 +63,7 @@ else{
 $(function() {
   //検索処理
   $("#searchButton").click(function() {
+    $.waypoints('destroy');
     $("#result").html('<center><h4 class="Loading">読み込み中…</h4></center>');
     var androidCheck = $("#Android").attr("checked");
     var iosCheck = $("#iOS").attr("checked");
@@ -141,6 +142,8 @@ $(function() {
       core.push("2");
       core.push("4");
     }
+    //global.autoTwitter = $("#twitterFlip").val();
+    global.autoTwitter = 'on';
 
     osTag = arrayToText(osTag);
     displayCategory = arrayToText(displayCategory);
@@ -164,7 +167,6 @@ $(function() {
       "core" : core,
       "callback" : "?"
     };
-    //alert(JSON.stringify(param));
     searchRequest(param);
     var query = JSON.stringify(param);
     var u = "#seach&" + query;
@@ -222,7 +224,7 @@ $(function() {
       else{
         amazonUrl = 'http://www.amazon.co.jp/gp/aw/s/ref=is_s_?__mk_ja_JP=カタカナ&k=' + urlKeyword + '&i=aps';
       }
-      message = '<a href="#" class="resultLink" data-transition="pop" data-rel="popup" target="new"><table class="resultInfo"><tr><td><div id="resultImg"><img src="' + img +'" /></div></td><td><p class="productName"><span>'
+      message = '<a href="' + amazonUrl + '" class="resultLink" data-transition="pop" data-rel="popup" target="new"><table class="resultInfo"><tr><td><div id="resultImg"><img src="' + img +'" /></div></td><td><p class="productName"><span>'
       + this.productName
       + '</span><p class="os">OS:'
       + this.os
@@ -232,11 +234,38 @@ $(function() {
       + weight
       + '<br><span class="displaySize">ディスプレイ:'
       + this.displaySize
-      + 'インチ</span></p></td></tr></table></a><div class="sosialButton"><div class="amazonP"><a href="'+ amazonUrl +'" id="amazon" target="new" rel=”external”><img src="htmls/img/amazon_so.png" />アマゾンで検索する</a></div><div class="twitterP"><a href="#" onclick="return false;" id="twitterOpen" name="' + key + '" className="' + i + '"><img src="htmls/img/twitter_so.png" />ツイッターでの評判を見る</a></div></div><div id="twitterContent' + i + '" style="display: none"><p class="keywordP"><span class="keywordInfo' + i + '">読み込み中…</span></p><div id="twitter_search' + i + '"><div class="attweets"></div></div><div class="moreReadButton"><a href="#" id="moreRead' + i + '">More...</a></div></div>';
+      + 'インチ</span></p></td></tr></table></a><div class="socialButton"><div class="amazonP"><a href="'+ amazonUrl +'" id="amazon" target="new" rel=”external”><img src="htmls/img/amazon_so.png" />アマゾンで検索する</a></div><div class="twitterP"><a href="#" onclick="return false;" id="twitterOpen" name="' + key + '" className="' + i + '"><img src="htmls/img/twitter_so.png" />ツイッターでの評判を見る</a></div></div><div id="twitterContent' + i + '" style="display: none"><p class="keywordP"><span class="keywordInfo' + i + '">読み込み中…</span></p><div id="twitter_search' + i + '"><div class="attweets"></div></div><div class="moreReadButton"><a href="#" id="moreRead' + i + '">More...</a></div></div>';
       $('<li>').html(message).appendTo('#result');
       html = "";
     });
+    $.waypoints('refresh');
+    if(global.autoTwitter == 'on'){
+      $(".twitterP a").waypoint(function() {
+        var className = $(this).attr("className");
+        var name = this.name;
+        openTw(name, className);
+        $(this).html('<img src="htmls/img/twitter_so.png" />閉じる');
+      },{container: 'auto',triggerOnce: true,offset: 'bottom-in-view'});
+    }
   };
+  function openTw(divName, divClassName){
+    var key = divName;
+    var i = divClassName;
+    var id = "#twitterContent" + i;
+    var id2 = "#twitter_search"  + i;
+    var keyInfo = ".keywordInfo" + i;
+    var read = "#moreRead" + i;
+    if(!global.count[i]){
+      global.count[i] = true;
+      $(id2 + ' ul').html('');
+      $(id2).ATTwitterSearch({
+        q : key,
+        view : 5
+      }, read);
+      $(keyInfo).html(key + ' の検索結果');
+    }
+    $(id).show();
+  }
   $("#twitterOpen").live("click", function() {
     var i = $(this).attr("className");
     var key = this.name;
@@ -261,9 +290,74 @@ $(function() {
       $(this).html('<img src="htmls/img/twitter_so.png" />ツイッターでの評判を見る');
     }
     $(id).toggle();
+    $.waypoints('refresh');
   });
 });
 //検索処理おわり
+
+/*
+$(function(){
+
+
+});
+
+$(function(){
+  $(".copyright").lazyaction({
+    action: alertWin
+  });
+});
+
+$(function() {
+  var divTop = [];
+  var divClassName = [];
+  var divKey = [];
+  var divHtml = [];
+  var current = -1;
+
+  // 各divの位置を取得
+  $('a#twitterOpen').each(function (i) {
+    divTop[i] = $(this).offset().top;
+    divClassName[i] = $(this).attr("className");
+    divKey[i] = this.name;
+    divHtml[i] = $(this).html();
+  });
+
+  // スクロールイベント
+  $(window).scroll(function () {
+    for (i = divTop.length - 1; i >= 0; i--) {
+      if ($(window).scrollTop() > divTop[i] - 50) {
+        readTwitter(i);
+        break;
+      }
+    }
+  });
+
+  function readTwitter(Num) {
+    if (Num != current) {
+      var i = divClassName[Num];
+      var key = divKey[Num];
+      var id = "#twitterContent" + i;
+      var id2 = "#twitter_search"  + i;
+      var keyInfo = ".keywordInfo" + i;
+      var a = divHtml[Num];
+      var read = "#moreRead" + i;
+      if(a == '<img src="htmls/img/twitter_so.png">ツイッターでの評判を見る'){
+        //$(this).html('<img src="htmls/img/twitter_so.png" />閉じる');
+        if(!global.count[i]){
+          global.count[i] = true;
+          $(id2 + ' ul').html('');
+          $(id2).ATTwitterSearch({
+            q : key,
+            view : 5
+          }, read);
+        }
+        $(keyInfo).html(key + ' の検索結果');
+      }
+      $(id).toggle();
+    }
+  }
+});
+*/
 
 //リセットボタンの処理
 $(function() {
