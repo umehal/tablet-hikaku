@@ -1,8 +1,3 @@
-// JavaScript Document　これはいらないかも
-jQuery.postJSON = function(url, data, callback) {
-　　jQuery.post(url, data, callback, "json");
-};
-
 //JQM設定
 $(document).bind("mobileinit", function(){
   $.mobile.page.prototype.options.backBtnText = "戻る";
@@ -28,7 +23,7 @@ global.loading = function(state){
       html: ""
     });
   }
-  else{
+  else if(!state){
     fn = $.mobile.loading('hide');
   }
   return fn;
@@ -169,7 +164,7 @@ $(function() {
     };
     searchRequest(param);
     var query = JSON.stringify(param);
-    var u = "#seach&" + query;
+    var u = "#search&" + query;
     u ? _gaq.push(['_trackPageview', u]) : _gaq.push(['_trackPageview']);
   });
 
@@ -187,13 +182,12 @@ $(function() {
   function searchRequest(param){
     url = global.url + 'search';
     req = param;
-    global.loading(true, '検索中…');
+    global.loading(true);
     $.post(url, req, callback, "json");
   }
   var callback = function(json){
     global.loading(false);
     $("#result").html('<center><h4 class="Loading">検索結果 : ' + json.length +'件</h4></center>');
-    //alert(JSON.stringify(json));
     if(json === 0){
       $('#result').html('<p class="noData">該当のタブレットが見つかりませんでした</p>');
       return;
@@ -219,22 +213,12 @@ $(function() {
       //urlKeyword = encodeURI(urlKeyword);
       var amazonUrl;
       if(global.ua === 'pc'){
-        amazonUrl = 'http://www.amazon.co.jp/s/ref=nb_sb_noss_2?__mk_ja_JP=カタカナ&url=search-alias%3Daps&field-keywords=' + urlKeyword; + '&x=0&Ay=0';
+        amazonUrl = 'http://www.amazon.co.jp/s/ref=nb_sb_noss_2?__mk_ja_JP=カタカナ&url=search-alias%3Daps&field-keywords=' + urlKeyword + '&x=0&Ay=0';
       }
       else{
         amazonUrl = 'http://www.amazon.co.jp/gp/aw/s/ref=is_s_?__mk_ja_JP=カタカナ&k=' + urlKeyword + '&i=aps';
       }
-      message = '<a href="' + amazonUrl + '" class="resultLink" data-transition="pop" data-rel="popup" target="new"><table class="resultInfo"><tr><td><div id="resultImg"><img src="' + img +'" /></div></td><td><p class="productName"><span>'
-      + this.productName
-      + '</span><p class="os">OS:'
-      + this.os
-      + '</p><p class="cpu">CPU:'
-      + this.cpu
-      + '　<br>重さ:'
-      + weight
-      + '<br><span class="displaySize">ディスプレイ:'
-      + this.displaySize
-      + 'インチ</span></p></td></tr></table></a><div class="socialButton"><div class="amazonP"><a href="'+ amazonUrl +'" id="amazon" target="new" rel=”external”><img src="htmls/img/amazon_so.png" />アマゾンで検索する</a></div><div class="twitterP"><a href="#" onclick="return false;" id="twitterOpen" name="' + key + '" className="' + i + '"><img src="htmls/img/twitter_so.png" />ツイッターでの評判を見る</a></div></div><div id="twitterContent' + i + '" style="display: none"><p class="keywordP"><span class="keywordInfo' + i + '">読み込み中…</span></p><div id="twitter_search' + i + '"><div class="attweets"></div></div><div class="moreReadButton"><a href="#" id="moreRead' + i + '">More...</a></div></div>';
+      message = '<a href="' + amazonUrl + '" class="resultLink" data-transition="pop" data-rel="popup" target="new"><table class="resultInfo"><tr><td><div id="resultImg"><img src="' + img +'" /></div></td><td><p class="productName"><span>' + this.productName + '</span><p class="os">OS:' + this.os + '</p><p class="cpu">CPU:' + this.cpu + '　<br>重さ:' + weight + '<br><span class="displaySize">ディスプレイ:' + this.displaySize + 'インチ</span></p></td></tr></table></a><div class="socialButton"><div class="amazonP"><a href="'+ amazonUrl +'" id="amazon" target="new" rel=”external”><img src="htmls/img/amazon_so.png" />アマゾンで検索する</a></div><div class="twitterP"><a href="#" onclick="return false;" id="twitterOpen" name="' + key + '" className="' + i + '"><img src="htmls/img/twitter_so.png" />ツイッターでの評判を見る</a></div></div><div id="twitterContent' + i + '" style="display: none"><p class="keywordP"><span class="keywordInfo' + i + '">読み込み中…</span></p><div id="twitter_search' + i + '"><div class="attweets"></div></div><div class="moreReadButton"><a href="#" id="moreRead' + i + '">More...</a></div></div>';
       $('<li>').html(message).appendTo('#result');
       html = "";
     });
@@ -295,70 +279,6 @@ $(function() {
 });
 //検索処理おわり
 
-/*
-$(function(){
-
-
-});
-
-$(function(){
-  $(".copyright").lazyaction({
-    action: alertWin
-  });
-});
-
-$(function() {
-  var divTop = [];
-  var divClassName = [];
-  var divKey = [];
-  var divHtml = [];
-  var current = -1;
-
-  // 各divの位置を取得
-  $('a#twitterOpen').each(function (i) {
-    divTop[i] = $(this).offset().top;
-    divClassName[i] = $(this).attr("className");
-    divKey[i] = this.name;
-    divHtml[i] = $(this).html();
-  });
-
-  // スクロールイベント
-  $(window).scroll(function () {
-    for (i = divTop.length - 1; i >= 0; i--) {
-      if ($(window).scrollTop() > divTop[i] - 50) {
-        readTwitter(i);
-        break;
-      }
-    }
-  });
-
-  function readTwitter(Num) {
-    if (Num != current) {
-      var i = divClassName[Num];
-      var key = divKey[Num];
-      var id = "#twitterContent" + i;
-      var id2 = "#twitter_search"  + i;
-      var keyInfo = ".keywordInfo" + i;
-      var a = divHtml[Num];
-      var read = "#moreRead" + i;
-      if(a == '<img src="htmls/img/twitter_so.png">ツイッターでの評判を見る'){
-        //$(this).html('<img src="htmls/img/twitter_so.png" />閉じる');
-        if(!global.count[i]){
-          global.count[i] = true;
-          $(id2 + ' ul').html('');
-          $(id2).ATTwitterSearch({
-            q : key,
-            view : 5
-          }, read);
-        }
-        $(keyInfo).html(key + ' の検索結果');
-      }
-      $(id).toggle();
-    }
-  }
-});
-*/
-
 //リセットボタンの処理
 $(function() {
   $("#resetButton").live("click", function() {
@@ -366,6 +286,8 @@ $(function() {
     $("input[type='checkbox']").attr("checked", false).checkboxradio("refresh");
     $("#cpuSelect1").val("none").selectmenu('refresh');
     $("#resolutionSelect").val("none").selectmenu('refresh');
+    var u = '#resetButton';
+    u ? _gaq.push(['_trackPageview', u]) : _gaq.push(['_trackPageview']);
   });
 });
 //リセットボタンの処理
